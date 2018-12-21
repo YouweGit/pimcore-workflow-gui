@@ -1,0 +1,14 @@
+services:
+    Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver:
+        arguments:
+            - '%workflow_gui.config%'
+
+    Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepository:
+        arguments:
+            - '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'
+
+    Youwe\Pimcore\WorkflowGui\Controller\WorkflowController:
+        arguments:
+            - '@Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepository'
+        tags:
+            - { name: controller.service_arguments }

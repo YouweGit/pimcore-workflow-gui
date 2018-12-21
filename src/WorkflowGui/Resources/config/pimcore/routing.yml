@@ -1,0 +1,7 @@
+workflow_gui.admin.list:
+    path: /admin/workflow/list
+    defaults: { _controller: WorkflowGuiBundle:Workflow:list }
+
+workflow_gui.admin.get:
+    path: /admin/workflow/get
+    defaults: { _controller: WorkflowGuiBundle:Workflow:get }
