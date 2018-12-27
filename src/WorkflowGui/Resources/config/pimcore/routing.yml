@@ -5,3 +5,12 @@ workflow_gui.admin.list:
 workflow_gui.admin.get:
     path: /admin/workflow/get
     defaults: { _controller: WorkflowGuiBundle:Workflow:get }
+
+workflow_gui.admin.save:
+    path: /admin/workflow/save
+    methods: [POST]
+    defaults: { _controller: WorkflowGuiBundle:Workflow:save }
+
+workflow_gui.roles.search:
+    path: /admin/workflow/roles/search
+    defaults: { _controller: WorkflowGuiBundle:Workflow:searchRoles }

@@ -13,7 +13,16 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
     public function getJsPaths()
     {
         return [
-            '/bundles/workflowgui/js/pimcore/startup.js'
+            '/bundles/workflowgui/js/pimcore/startup.js',
+            '/bundles/workflowgui/js/pimcore/workflow/panel.js',
+            '/bundles/workflowgui/js/pimcore/workflow/item.js',
+            '/bundles/workflowgui/js/pimcore/workflow/place.js',
+            '/bundles/workflowgui/js/pimcore/workflow/transition.js',
+            '/bundles/workflowgui/js/pimcore/workflow/transition_notification.js',
+            '/bundles/workflowgui/js/pimcore/workflow/support_strategy/abstract.js',
+            '/bundles/workflowgui/js/pimcore/workflow/support_strategy/simple.js',
+            '/bundles/workflowgui/js/pimcore/workflow/support_strategy/expression.js',
+            '/bundles/workflowgui/js/pimcore/workflow/support_strategy/service.js',
         ];
     }
 }
