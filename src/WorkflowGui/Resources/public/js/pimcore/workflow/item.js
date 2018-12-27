@@ -72,6 +72,10 @@ pimcore.plugin.workflow.item = Class.create({
             model: 'WorkflowGUI.Transition'
         });
 
+        this.globalActionsStore = new Ext.data.ArrayStore({
+            model: 'WorkflowGUI.Transition'
+        });
+
         var places = this.data.hasOwnProperty('places') ? this.data.places : {};
 
         places = Object.keys(places).map(function (objectKey, index) {
@@ -93,6 +97,17 @@ pimcore.plugin.workflow.item = Class.create({
         });
 
         this.transitionStore.setData(transitions);
+
+        var globalActions = this.data.hasOwnProperty('globalActions') ? this.data.globalActions : {};
+
+        globalActions = Object.keys(globalActions).map(function (objectKey, index) {
+            var globalAction = globalActions[objectKey];
+            globalAction['id'] = objectKey;
+
+            return globalAction;
+        });
+
+        this.globalActionsStore.setData(globalActions);
 
         me.addLayout();
     },
@@ -477,7 +492,6 @@ pimcore.plugin.workflow.item = Class.create({
             padding: 10,
             items: [{
                 xtype: 'grid',
-                itemId: 'placesGrid',
                 title: t('workflow_transitions'),
                 margin: '0 0 15 0',
                 store: this.transitionStore,
@@ -535,16 +549,68 @@ pimcore.plugin.workflow.item = Class.create({
     },
 
     getGlobalActionsPanel: function () {
-        this.globalActionsPanel = new Ext.form.Panel({
+        this.globalActionsPanel = new Ext.Panel({
             border: false,
             autoScroll: true,
             title: t('workflow_settings_global_actions'),
             iconCls: 'pimcore_icon_settings',
             padding: 10,
-            items: []
+            items: [{
+                xtype: 'grid',
+                title: t('workflow_global_actions'),
+                margin: '0 0 15 0',
+                store: this.globalActionsStore,
+                columns: [
+                    {
+                        xtype: 'gridcolumn',
+                        dataIndex: 'id',
+                        text: t('workflow_global_action_id'),
+                        flex: 1
+                    },
+                    {
+                        menuDisabled: true,
+                        sortable: false,
+                        xtype: 'actioncolumn',
+                        width: 50,
+                        items: [{
+                            iconCls: 'pimcore_icon_edit',
+                            tooltip: t('edit'),
+                            handler: function (grid, rowIndex, colIndex) {
+                                new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, grid.store.getAt(rowIndex));
+                            }.bind(this)
+                        }]
+                    },
+                ],
+                tbar: [
+                    {
+                        text: t('add'),
+                        handler: function (btn) {
+                            Ext.MessageBox.prompt(t('workflow_global_action_id'), t('workflow_enter_global_action_id'), function (button, value) {
+                                if (button === 'ok') {
+                                    if (this.transitionStore.getById(value)) {
+                                        Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_global_action_with_id_already_exists'));
+                                        return;
+                                    }
+
+                                    var record = new WorkflowGUI.Transition({
+                                        id: value
+                                    });
+
+                                    this.globalActionsStore.add(record);
+
+                                    new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, record);
+                                } else if (button == 'cancel') {
+                                    return;
+                                }
+                            }.bind(this), null, null, '');
+                        }.bind(this),
+                        iconCls: 'pimcore_icon_add'
+                    }
+                ]
+            }]
         });
 
-        return this.globalActionsPanel;
+        return this.globalActionsPanel
     },
 
     save: function () {
@@ -635,8 +701,6 @@ pimcore.plugin.workflow.item = Class.create({
             places[id] = place;
         });
 
-        data['places'] = places;
-
         var transitions = {};
 
         this.transitionStore.getRange().forEach(function (record) {
@@ -648,8 +712,21 @@ pimcore.plugin.workflow.item = Class.create({
             transitions[id] = transition;
         });
 
+        var globalActions = {};
+
+        this.globalActionsStore.getRange().forEach(function (record) {
+            var globalAction = Ext.clone(record.data);
+            var id = record.getId();
+
+            delete globalAction['id'];
+
+            globalActions[id] = globalAction;
+        });
+
         data['id'] = data['name'];
+        data['places'] = places;
         data['transitions'] = transitions;
+        data['globalActions'] = globalActions;
 
         delete data['name'];
 
