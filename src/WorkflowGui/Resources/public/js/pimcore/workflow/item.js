@@ -14,9 +14,10 @@
 pimcore.registerNS('pimcore.plugin.workflow.item');
 pimcore.plugin.workflow.item = Class.create({
 
-    initialize: function (id, data, parentPanel) {
+    initialize: function (id, data, parentPanel, panelKey) {
         var me = this;
 
+        me.panelKey = panelKey;
         me.parentPanel = parentPanel;
         me.data = data;
         me.id = id;
@@ -134,7 +135,7 @@ pimcore.plugin.workflow.item = Class.create({
         });
 
         this.panel.on('destroy', function () {
-            delete this.parentPanel.panels['workflow_' + this.id];
+            delete this.parentPanel.panels[this.panelKey];
         }.bind(this));
 
         this.parentPanel.getEditPanel().add(this.panel);
@@ -626,7 +627,7 @@ pimcore.plugin.workflow.item = Class.create({
         var places = {};
 
         this.placesStore.getRange().forEach(function (record) {
-            var place = record.data;
+            var place = Ext.clone(record.data);
             var id = record.getId();
 
             delete place['id'];
@@ -639,7 +640,7 @@ pimcore.plugin.workflow.item = Class.create({
         var transitions = {};
 
         this.transitionStore.getRange().forEach(function (record) {
-            var transition = record.data;
+            var transition = Ext.clone(record.data);
             var id = record.getId();
 
             delete transition['id'];
@@ -656,9 +657,7 @@ pimcore.plugin.workflow.item = Class.create({
     },
 
     saveOnComplete: function () {
-        this.parentPanel.tree.getStore().load({
-            node: this.parentPanel.tree.getRootNode()
-        });
+        this.parentPanel.grid.getStore().load();
 
         pimcore.helpers.showNotification(t('success'), t('workflow_saved_successfully'), 'success');
     },

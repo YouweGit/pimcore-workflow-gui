@@ -132,7 +132,7 @@ pimcore.plugin.workflow.panel = Class.create({
                         if (!data || !data.success) {
                             Ext.Msg.alert(t('workflow_add'), t('workflow_problem_opening_workflow'));
                         } else {
-                            var workflowPanel = new pimcore.plugin.workflow.item(id, data.data, this);
+                            var workflowPanel = new pimcore.plugin.workflow.item(id, data.data, this, workflowPanelKey);
                             this.panels[workflowPanelKey] = workflowPanel;
                         }
                     }.bind(this)

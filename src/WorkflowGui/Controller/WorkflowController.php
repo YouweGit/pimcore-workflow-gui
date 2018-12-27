@@ -47,7 +47,7 @@ class WorkflowController extends AdminController
      */
     public function listAction(Request $request)
     {
-        return $this->json(array_map(function($workflowKey) {
+        return $this->json(array_map(function ($workflowKey) {
             return ['id' => $workflowKey];
         }, array_keys($this->repository->findAll())));
     }
@@ -78,22 +78,24 @@ class WorkflowController extends AdminController
         $newId = $request->get('newId');
         $newConfiguration = $this->decodeJson($request->get('data'));
 
+        $newConfiguration = $this->sanitizeConfiguration($newConfiguration);
+        $testConfig = $newConfiguration;
+
         //Test Configuration
         $configuration = new Configuration();
         $processor = new Processor();
 
         try {
             $config = $processor->processConfiguration($configuration, [
-                'pimcore' =>
-                    [
-                        'workflows' => [
-                            $newId => $newConfiguration
-                        ]
-                    ]
+                    'pimcore' =>
+                        [
+                            'workflows' => [
+                                $newId => $testConfig,
+                            ],
+                        ],
                 ]
             );
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             return $this->json(['success' => false, 'message' => $ex->getMessage()]);
         }
 
@@ -144,5 +146,38 @@ class WorkflowController extends AdminController
             'success' => true,
             'roles' => $users,
         ]);
+    }
+
+    protected function sanitizeConfiguration($configuration)
+    {
+        if (isset($configuration['places'])) {
+            foreach ($configuration['places'] as $placeKey => &$placeConfig) {
+                foreach ($placeConfig as $placeConfigKey => $value) {
+                    if (!$value) {
+                        unset($placeConfig[$placeConfigKey]);
+                    }
+                }
+            }
+        }
+
+        if (isset($configuration['transitions'])) {
+            foreach ($configuration['transitions'] as $transitionKey => &$transitionConfig) {
+                if (isset($transitionConfig['options'])) {
+                    foreach ($transitionConfig['options'] as $transitionOptionConfigKey => $value) {
+                        if (!$value) {
+                            unset($transitionConfig['options'][$transitionOptionConfigKey]);
+                        }
+                    }
+
+                    if (isset($transitionConfig['options']['notes'])) {
+                        if (!$transitionConfig['options']['notes']['commentEnabled']) {
+                            unset($transitionConfig['options']['notes']);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $configuration;
     }
 }

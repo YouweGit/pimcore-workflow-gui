@@ -61,7 +61,7 @@ pimcore.plugin.workflow.transition_notification = Class.create({
             minChars: 1,
             tpl: resultTpl,
             triggerAction: 'all',
-            multiple: true,
+            multiSelect: true,
             value: value,
             listeners: {
                 afterrender: function () {
@@ -102,7 +102,7 @@ pimcore.plugin.workflow.transition_notification = Class.create({
             minChars: 1,
             tpl: resultTpl,
             triggerAction: 'all',
-            multiple: true,
+            multiSelect: true,
             value: value,
             listeners: {
                 afterrender: function () {

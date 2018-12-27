@@ -179,7 +179,7 @@ pimcore.plugin.workflow.transition = Class.create({
                     value: transition.get('from'),
                     displayField: 'id',
                     valueField: 'id',
-                    multiple: true,
+                    multiSelect: true,
                     queryMode: 'local',
                 },
                 {
@@ -190,7 +190,7 @@ pimcore.plugin.workflow.transition = Class.create({
                     value: transition.get('to'),
                     displayField: 'id',
                     valueField: 'id',
-                    multiple: true,
+                    multiSelect: true,
                     queryMode: 'local',
                 },
             ]
