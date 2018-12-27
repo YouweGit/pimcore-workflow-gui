@@ -38,6 +38,28 @@ pimcore.plugin.workflow.item = Class.create({
             });
         }
 
+        if (!Ext.ClassManager.isCreated('WorkflowGUI.Place.Permission')) {
+            Ext.define('WorkflowGUI.Place.Permission', {
+                extend: 'Ext.data.Model',
+                idProperty: 'id',
+                fields: [
+                    'id',
+                    'condition',
+                    'save',
+                    'publish',
+                    'unpublish',
+                    'delete',
+                    'rename',
+                    'view',
+                    'settings',
+                    'versions',
+                    'properties',
+                    'modify',
+                    'objectLayout'
+                ]
+            });
+        }
+
         this.placesStore = new Ext.data.ArrayStore({
             model: 'WorkflowGUI.Place'
         });

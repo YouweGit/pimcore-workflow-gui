@@ -157,6 +157,24 @@ class WorkflowController extends AdminController
                         unset($placeConfig[$placeConfigKey]);
                     }
                 }
+
+                if (isset($placeConfig['permissions'])) {
+                    foreach ($placeConfig['permissions'] as $permissionIndex => &$permissionConfig) {
+                        foreach ($permissionConfig as $permissionKey => $permissionValue) {
+                            if ($permissionValue === null || ($permissionKey === 'condition' && !$permissionValue)) {
+                                unset($permissionConfig[$permissionKey]);
+                            }
+                        }
+
+                        if (count($permissionConfig) === 0) {
+                            unset ($placeConfig['permissions'][$permissionIndex]);
+                        }
+                    }
+
+                    if (count($placeConfig['permissions']) === 0) {
+                        unset($placeConfig['permissions']);
+                    }
+                }
             }
         }
 

@@ -29,6 +29,7 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
             '/bundles/workflowgui/js/pimcore/workflow/panel.js',
             '/bundles/workflowgui/js/pimcore/workflow/item.js',
             '/bundles/workflowgui/js/pimcore/workflow/place.js',
+            '/bundles/workflowgui/js/pimcore/workflow/place_permission.js',
             '/bundles/workflowgui/js/pimcore/workflow/transition.js',
             '/bundles/workflowgui/js/pimcore/workflow/transition_notification.js',
             '/bundles/workflowgui/js/pimcore/workflow/global_action.js',
