@@ -187,9 +187,19 @@ class WorkflowController extends AdminController
                         }
                     }
 
-                    if (isset($transitionConfig['options']['notes'])) {
-                        if (!$transitionConfig['options']['notes']['commentEnabled']) {
-                            unset($transitionConfig['options']['notes']);
+                    if (isset($transitionConfig['options']['notes']['additionalFields'])) {
+                        foreach ($transitionConfig['options']['notes']['additionalFields'] as &$additionalField) {
+                            if (!$additionalField['setterFn']) {
+                                unset ($additionalField['setterFn']);
+                            }
+
+                            if (!$additionalField['title']) {
+                                unset ($additionalField['title']);
+                            }
+
+                            if (!$additionalField['required']) {
+                                unset ($additionalField['required']);
+                            }
                         }
                     }
                 }

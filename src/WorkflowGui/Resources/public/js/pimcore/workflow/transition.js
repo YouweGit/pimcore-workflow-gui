@@ -25,6 +25,12 @@ pimcore.plugin.workflow.transition = Class.create({
 
         this.notificationStore.setData(options.hasOwnProperty('notificationSettings') ? options.notificationSettings : []);
 
+        this.additionalFieldsStore = new Ext.data.ArrayStore({
+            model: 'WorkflowGUI.AdditionalField',
+        });
+
+        this.additionalFieldsStore.setData(options.hasOwnProperty('notes') && options.notes.hasOwnProperty('additionalFields') ? options.notes.additionalFields : []);
+
         this.window = new Ext.window.Window({
             title: t('workflow_transition') + ': ' + transition.getId(),
             items: this.getSettings(transition),
@@ -78,6 +84,54 @@ pimcore.plugin.workflow.transition = Class.create({
                     valueField: 'type',
                     allowBlank: false
                 },
+            ]
+        });
+
+
+        this.additionalFieldsSettings = new Ext.Panel({
+            defaults: {
+                width: '100%',
+                labelWidth: 200
+            },
+            items: [
+                {
+                    xtype: 'grid',
+                    margin: '0 0 15 0',
+                    title: t('workflow_additional_fields'),
+                    store: this.additionalFieldsStore,
+                    columns: [
+                        {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'name',
+                            text: t('workflow_additional_field_name'),
+                            flex: 1
+                        },
+                        {
+                            menuDisabled: true,
+                            sortable: false,
+                            xtype: 'actioncolumn',
+                            width: 50,
+                            items: [{
+                                iconCls: 'pimcore_icon_edit',
+                                tooltip: t('edit'),
+                                handler: function (grid, rowIndex, colIndex) {
+                                    new pimcore.plugin.workflow.additional_field(this.additionalFieldsStore, grid.store.getAt(rowIndex));
+                                }.bind(this)
+                            }]
+                        },
+                    ],
+                    tbar: [
+                        {
+                            text: t('add'),
+                            handler: function (btn) {
+                                var record = new WorkflowGUI.AdditionalField();
+
+                                new pimcore.plugin.workflow.additional_field(this.additionalFieldsStore, record);
+                            }.bind(this),
+                            iconCls: 'pimcore_icon_add'
+                        }
+                    ]
+                }
             ]
         });
 
@@ -146,6 +200,7 @@ pimcore.plugin.workflow.transition = Class.create({
                             value: optionNotes.hasOwnProperty('title') ? optionNotes.title : '',
                             fieldLabel: t('workflow_transition_note_title')
                         },
+                        this.additionalFieldsSettings
                     ]
                 }
             ]
@@ -297,6 +352,7 @@ pimcore.plugin.workflow.transition = Class.create({
                             var formValues = this.settingsForm.getForm().getFieldValues();
                             var optionsValues = this.optionsForm.getForm().getFieldValues();
                             var notesValues = this.notesForm.getForm().getFieldValues();
+                            var additionalFields = this.additionalFieldsStore.getRange();
                             var storeRecord = this.store.getById(formValues['id']);
                             var notifications = this.notificationStore.getRange();
 
@@ -313,7 +369,17 @@ pimcore.plugin.workflow.transition = Class.create({
                                 return data;
                             });
 
+                            additionalFields = additionalFields.map(function(record) {
+                                var data = record.data;
+
+                                delete data['id'];
+
+                                return data;
+                            });
+
                             this.store.remove(transition);
+
+                            notesValues['additionalFields'] = additionalFields;
 
                             optionsValues['notes'] = notesValues;
                             optionsValues['notificationSettings'] = notifications;

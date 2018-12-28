@@ -33,6 +33,7 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
             '/bundles/workflowgui/js/pimcore/workflow/transition.js',
             '/bundles/workflowgui/js/pimcore/workflow/transition_notification.js',
             '/bundles/workflowgui/js/pimcore/workflow/global_action.js',
+            '/bundles/workflowgui/js/pimcore/workflow/additional_field.js',
             '/bundles/workflowgui/js/pimcore/workflow/support_strategy/abstract.js',
             '/bundles/workflowgui/js/pimcore/workflow/support_strategy/simple.js',
             '/bundles/workflowgui/js/pimcore/workflow/support_strategy/expression.js',

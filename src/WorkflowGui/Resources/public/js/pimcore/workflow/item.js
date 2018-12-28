@@ -38,6 +38,21 @@ pimcore.plugin.workflow.item = Class.create({
             });
         }
 
+        if (!Ext.ClassManager.isCreated('WorkflowGUI.AdditionalField')) {
+            Ext.define('WorkflowGUI.AdditionalField', {
+                extend: 'Ext.data.Model',
+                idProperty: 'name',
+                fields: [
+                    'name',
+                    'fieldType',
+                    'title',
+                    'required',
+                    'setterFn',
+                    'fieldTypeSettings',
+                ]
+            });
+        }
+
         if (!Ext.ClassManager.isCreated('WorkflowGUI.Place.Permission')) {
             Ext.define('WorkflowGUI.Place.Permission', {
                 extend: 'Ext.data.Model',
