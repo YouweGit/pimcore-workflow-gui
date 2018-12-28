@@ -17,6 +17,12 @@ pimcore.plugin.workflow.global_action = Class.create({
         this.store = store;
         this.placesStore = placesStore;
 
+        this.additionalFieldsStore = new Ext.data.ArrayStore({
+            model: 'WorkflowGUI.AdditionalField',
+        });
+
+        this.additionalFieldsStore.setData(globalAction.get('additionalFields'));
+
         this.window = new Ext.window.Window({
             title: t('workflow_global_action') + ': ' + globalAction.getId(),
             items: this.getSettings(globalAction),
@@ -32,6 +38,53 @@ pimcore.plugin.workflow.global_action = Class.create({
 
     getSettings: function (globalAction) {
         var notes = globalAction.get('notes') ? globalAction.get('notes') : {};
+
+        this.additionalFieldsSettings = new Ext.Panel({
+            defaults: {
+                width: '100%',
+                labelWidth: 200
+            },
+            items: [
+                {
+                    xtype: 'grid',
+                    margin: '0 0 15 0',
+                    title: t('workflow_additional_fields'),
+                    store: this.additionalFieldsStore,
+                    columns: [
+                        {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'name',
+                            text: t('workflow_additional_field_name'),
+                            flex: 1
+                        },
+                        {
+                            menuDisabled: true,
+                            sortable: false,
+                            xtype: 'actioncolumn',
+                            width: 50,
+                            items: [{
+                                iconCls: 'pimcore_icon_edit',
+                                tooltip: t('edit'),
+                                handler: function (grid, rowIndex, colIndex) {
+                                    new pimcore.plugin.workflow.additional_field(this.additionalFieldsStore, grid.store.getAt(rowIndex));
+                                }.bind(this)
+                            }]
+                        },
+                    ],
+                    tbar: [
+                        {
+                            text: t('add'),
+                            handler: function (btn) {
+                                var record = new WorkflowGUI.AdditionalField();
+
+                                new pimcore.plugin.workflow.additional_field(this.additionalFieldsStore, record);
+                            }.bind(this),
+                            iconCls: 'pimcore_icon_add'
+                        }
+                    ]
+                }
+            ]
+        });
 
         this.notesForm = new Ext.form.Panel({
             defaults: {
@@ -98,6 +151,7 @@ pimcore.plugin.workflow.global_action = Class.create({
                             value: notes.hasOwnProperty('title') ? notes.title : '',
                             fieldLabel: t('workflow_global_action_note_title')
                         },
+                        this.additionalFieldsSettings
                     ]
                 }
             ]
@@ -178,17 +232,28 @@ pimcore.plugin.workflow.global_action = Class.create({
                             var formValues = this.settingsForm.getForm().getFieldValues();
                             var notesValues = this.notesForm.getForm().getFieldValues();
                             var storeRecord = this.store.getById(formValues['id']);
+                            var additionalFields = this.additionalFieldsStore.getRange();
 
                             if (storeRecord && storeRecord !== globalAction) {
                                 Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_global_action_with_id_already_exists'));
                                 return;
                             }
 
+                            additionalFields = additionalFields.map(function(record) {
+                                var data = record.data;
+
+                                delete data['id'];
+
+                                return data;
+                            });
+
                             this.store.remove(globalAction);
 
                             if (!formValues['guard']) {
                                 delete formValues['guard'];
                             }
+
+                            notesValues['additionalFields'] = additionalFields;
 
                             globalAction.data = {};
                             globalAction.set(formValues);
