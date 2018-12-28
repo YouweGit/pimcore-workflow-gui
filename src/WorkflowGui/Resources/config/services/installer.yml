@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    # tool: installer
+    Youwe\Pimcore\WorkflowGui\Installer:
+        arguments:
+            - '%workflow_gui.config%'
+            - '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'

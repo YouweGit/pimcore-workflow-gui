@@ -1,3 +1,6 @@
+imports:
+    - { resource: 'services/installer.yml' }
+
 services:
     Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver:
         arguments:
