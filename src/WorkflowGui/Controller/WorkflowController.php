@@ -118,6 +118,27 @@ class WorkflowController extends AdminController
 
     /**
      * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deleteAction(Request $request)
+    {
+        $id = $request->get('id');
+
+        $configPath = $this->get(ConfigFileResolver::class)->getConfigPath();
+
+        $contents = Yaml::parseFile($configPath);
+
+        if (isset($contents['pimcore']['workflows'][$id])) {
+            unset($contents['pimcore']['workflows'][$id]);
+        }
+
+        file_put_contents($configPath, Yaml::dump($contents, 100));
+
+        return $this->json(['success' => true]);
+    }
+
+    /**
+     * @param Request $request
      * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
      */
     public function searchRolesAction(Request $request)

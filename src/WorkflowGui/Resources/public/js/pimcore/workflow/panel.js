@@ -72,6 +72,7 @@ pimcore.plugin.workflow.panel = Class.create({
                 width: 200,
                 split: true,
                 listeners: this.getGridListeners(),
+                hideHeaders: true,
                 columns: [{
                     dataIndex: 'id',
                     flex: 1,
@@ -179,16 +180,18 @@ pimcore.plugin.workflow.panel = Class.create({
         }
     },
 
-    deleteField: function (tree, record) {
+    deleteField: function (grid, record) {
         Ext.Ajax.request({
             url: '/admin/workflow/delete',
+            method: 'post',
             params: {
                 id: record.data.id
             }
         });
 
         this.getEditPanel().removeAll();
-        record.remove();
+
+        grid.store.remove(record);
     },
 
     activate: function () {

@@ -11,6 +11,11 @@ workflow_gui.admin.save:
     methods: [POST]
     defaults: { _controller: WorkflowGuiBundle:Workflow:save }
 
+workflow_gui.admin.delete:
+    path: /admin/workflow/delete
+    methods: [POST]
+    defaults: { _controller: WorkflowGuiBundle:Workflow:delete }
+
 workflow_gui.roles.search:
     path: /admin/workflow/roles/search
     defaults: { _controller: WorkflowGuiBundle:Workflow:searchRoles }
