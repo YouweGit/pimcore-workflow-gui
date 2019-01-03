@@ -206,7 +206,7 @@ pimcore.plugin.workflow.item = Class.create({
     getSettingsPanel: function () {
         var markingStoreArguments = new Ext.data.ArrayStore({
             data: $.map(this.data.hasOwnProperty('marking_store') ? this.data.marking_store.arguments : [], function (value, index) {
-                return [value];
+                return [[value]];
             }),
             fields: [
                 'argument',
@@ -275,6 +275,19 @@ pimcore.plugin.workflow.item = Class.create({
                             field: {
                                 xtype: 'textfield'
                             }
+                        },
+                        {
+                            menuDisabled: true,
+                            sortable: false,
+                            xtype: 'actioncolumn',
+                            width: 50,
+                            items: [{
+                                iconCls: 'pimcore_icon_delete',
+                                tooltip: t('delete'),
+                                handler: function (grid, rowIndex, colIndex) {
+                                    grid.store.removeAt(rowIndex);
+                                }.bind(this)
+                            }]
                         },
                     ],
                     tbar: [
