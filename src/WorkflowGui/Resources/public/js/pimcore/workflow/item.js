@@ -386,12 +386,12 @@ pimcore.plugin.workflow.item = Class.create({
     getSupportsPanel: function () {
         var supportType = 'simple';
 
-        if ((!this.data.hasOwnProperty('supports') && !this.data.hasOwnProperty('support_strategy')) || this.data.supports) {
+        if (!this.data.hasOwnProperty('support_strategy')) {
             supportType = 'simple';
         } else {
-            if (this.data.support_strategy.service) {
+            if (this.data.support_strategy.hasOwnProperty('service') && this.data.support_strategy.service) {
                 supportType = service;
-            } else if (this.data.support_strategy.type) {
+            } else if (this.data.support_strategy.hasOwnProperty('type') && this.data.support_strategy.type) {
                 supportType = this.data.support_strategy.type;
             }
         }
