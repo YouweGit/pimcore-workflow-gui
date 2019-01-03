@@ -117,6 +117,12 @@ pimcore.plugin.workflow.transition = Class.create({
                                 handler: function (grid, rowIndex, colIndex) {
                                     new pimcore.plugin.workflow.additional_field(this.additionalFieldsStore, grid.store.getAt(rowIndex));
                                 }.bind(this)
+                            }, {
+                                iconCls: 'pimcore_icon_delete',
+                                tooltip: t('delete'),
+                                handler: function (grid, rowIndex, colIndex) {
+                                    grid.store.removeAt(rowIndex);
+                                }.bind(this)
                             }]
                         },
                     ],
@@ -279,6 +285,12 @@ pimcore.plugin.workflow.transition = Class.create({
                                 tooltip: t('edit'),
                                 handler: function (grid, rowIndex, colIndex) {
                                     new pimcore.plugin.workflow.transition_notification(this.notificationStore, grid.store.getAt(rowIndex));
+                                }.bind(this)
+                            }, {
+                                iconCls: 'pimcore_icon_delete',
+                                tooltip: t('delete'),
+                                handler: function (grid, rowIndex, colIndex) {
+                                    grid.store.removeAt(rowIndex);
                                 }.bind(this)
                             }]
                         },

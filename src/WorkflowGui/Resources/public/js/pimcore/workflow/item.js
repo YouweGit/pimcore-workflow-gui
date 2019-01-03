@@ -485,6 +485,12 @@ pimcore.plugin.workflow.item = Class.create({
                             handler: function (grid, rowIndex, colIndex) {
                                 new pimcore.plugin.workflow.place(this.placesStore, grid.store.getAt(rowIndex));
                             }.bind(this)
+                        }, {
+                            iconCls: 'pimcore_icon_delete',
+                            tooltip: t('delete'),
+                            handler: function (grid, rowIndex, colIndex) {
+                                grid.store.removeAt(rowIndex);
+                            }.bind(this)
                         }]
                     },
                 ],
@@ -550,6 +556,12 @@ pimcore.plugin.workflow.item = Class.create({
                             handler: function (grid, rowIndex, colIndex) {
                                 new pimcore.plugin.workflow.transition(this.transitionStore, this.placesStore, grid.store.getAt(rowIndex));
                             }.bind(this)
+                        }, {
+                            iconCls: 'pimcore_icon_delete',
+                            tooltip: t('delete'),
+                            handler: function (grid, rowIndex, colIndex) {
+                                grid.store.removeAt(rowIndex);
+                            }.bind(this)
                         }]
                     },
                 ],
@@ -614,6 +626,12 @@ pimcore.plugin.workflow.item = Class.create({
                             tooltip: t('edit'),
                             handler: function (grid, rowIndex, colIndex) {
                                 new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, grid.store.getAt(rowIndex));
+                            }.bind(this)
+                        }, {
+                            iconCls: 'pimcore_icon_delete',
+                            tooltip: t('delete'),
+                            handler: function (grid, rowIndex, colIndex) {
+                                grid.store.removeAt(rowIndex);
                             }.bind(this)
                         }]
                     },

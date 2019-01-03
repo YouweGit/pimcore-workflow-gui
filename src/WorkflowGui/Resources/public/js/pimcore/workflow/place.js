@@ -64,6 +64,12 @@ pimcore.plugin.workflow.place = Class.create({
                                 handler: function (grid, rowIndex, colIndex) {
                                     new pimcore.plugin.workflow.place_permission(this.permissionsStore, grid.store.getAt(rowIndex));
                                 }.bind(this)
+                            }, {
+                                iconCls: 'pimcore_icon_delete',
+                                tooltip: t('delete'),
+                                handler: function (grid, rowIndex, colIndex) {
+                                    grid.store.removeAt(rowIndex);
+                                }.bind(this)
                             }]
                         },
                     ],
