@@ -50,7 +50,7 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
      */
     public function getInstaller()
     {
-        return $this->container->get(Installer::class);
+        return $this->container->get(MigrationInstaller::class);
     }
 
     /**

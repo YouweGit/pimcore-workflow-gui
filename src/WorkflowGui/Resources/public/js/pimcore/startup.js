@@ -26,7 +26,7 @@ pimcore.plugin.WorkflowGuiBundle = Class.create(pimcore.plugin.admin, {
         var user = pimcore.globalmanager.get('user');
         var perspectiveCfg = pimcore.globalmanager.get('perspective');
 
-        if(user.isAllowed('workflows') && perspectiveCfg.inToolbar('settings.workflows')) {
+        if(user.isAllowed('workflow_gui') && perspectiveCfg.inToolbar('settings.workflow_gui')) {
             var settingsMenu = new Ext.Action({
                 text: t('workflows'),
                 iconCls: 'pimcore_icon_workflow_action',

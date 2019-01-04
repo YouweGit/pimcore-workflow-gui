@@ -20,6 +20,7 @@ use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Yaml\Yaml;
@@ -47,6 +48,8 @@ class WorkflowController extends AdminController
      */
     public function listAction(Request $request)
     {
+        $this->isGrantedOr403();
+
         return $this->json(array_map(function ($workflowKey) {
             return ['id' => $workflowKey];
         }, array_keys($this->repository->findAll())));
@@ -58,6 +61,8 @@ class WorkflowController extends AdminController
      */
     public function getAction(Request $request)
     {
+        $this->isGrantedOr403();
+
         $id = $request->get('id');
         $workflow = $this->repository->find($id);
 
@@ -74,6 +79,8 @@ class WorkflowController extends AdminController
      */
     public function saveAction(Request $request)
     {
+        $this->isGrantedOr403();
+
         $id = $request->get('id');
         $newId = $request->get('newId');
         $newConfiguration = $this->decodeJson($request->get('data'));
@@ -122,6 +129,8 @@ class WorkflowController extends AdminController
      */
     public function deleteAction(Request $request)
     {
+        $this->isGrantedOr403();
+
         $id = $request->get('id');
 
         $configPath = $this->get(ConfigFileResolver::class)->getConfigPath();
@@ -143,6 +152,8 @@ class WorkflowController extends AdminController
      */
     public function searchRolesAction(Request $request)
     {
+        $this->isGrantedOr403();
+
         $q = '%'.$request->get('query').'%';
 
         $list = new User\Listing();
@@ -167,6 +178,20 @@ class WorkflowController extends AdminController
             'success' => true,
             'roles' => $users,
         ]);
+    }
+
+    /**
+     * @throws AccessDeniedException
+     */
+    protected function isGrantedOr403()
+    {
+        $user = $this->getAdminUser();
+
+        if ($user->isAllowed('workflow_gui')) {
+            return;
+        }
+
+        throw new AccessDeniedException();
     }
 
     protected function sanitizeConfiguration($configuration)
