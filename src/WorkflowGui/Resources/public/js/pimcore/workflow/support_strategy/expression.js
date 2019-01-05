@@ -13,9 +13,27 @@
 
 pimcore.registerNS('pimcore.plugin.workflow.support_strategy.expression');
 pimcore.plugin.workflow.support_strategy.expression = Class.create(pimcore.plugin.workflow.support_strategy.abstract, {
+
     getSettingsItems: function (id, data) {
+
+        var classesStore = new Ext.data.JsonStore({
+            storeId: 'classesStore',
+            autoLoad: true,
+            proxy: {
+                type: 'ajax',
+                url: '/admin/workflow/get-classes',
+                reader: {
+                    rootProperty: 'classes',
+                    type: 'json',
+                }
+            }
+        });
+
         return [{
-            xtype: 'textfield',
+            xtype: 'combo',
+            store: classesStore,
+            valueField: 'id',
+            displayField: 'name',
             fieldLabel: t('workflow_support_strategy_class'),
             name: 'class',
             allowBlank: false,

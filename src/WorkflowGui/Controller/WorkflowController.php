@@ -18,6 +18,7 @@ namespace Youwe\Pimcore\WorkflowGui\Controller;
 
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\User;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -253,5 +254,36 @@ class WorkflowController extends AdminController
         }
 
         return $configuration;
+    }
+
+    /**
+     * @param Request $request
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     */
+    public function getClassesAction (Request $request)
+    {
+        $this->isGrantedOr403();
+
+        $classesListing = new DataObject\ClassDefinition\Listing();
+        $classesListing->setOrderKey('name');
+        $classesListing->setOrder('asc');
+        $classesObjects = $classesListing->load();
+
+        $classes = [];
+        if (is_array($classesObjects)) {
+            /** @var DataObject\ClassDefinition $class */
+            foreach ($classesObjects as $class) {
+                $id = "Pimcore\Model\DataObject\\" . $class->getName();
+                $classes[] = [
+                    'id' => $id,
+                    'name' => $class->getName(),
+                ];
+            }
+        }
+
+        return $this->adminJson([
+            'success' => true,
+            'classes' => $classes,
+        ]);
     }
 }

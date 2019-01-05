@@ -19,3 +19,7 @@ workflow_gui.admin.delete:
 workflow_gui.roles.search:
     path: /admin/workflow/roles/search
     defaults: { _controller: WorkflowGuiBundle:Workflow:searchRoles }
+
+workflow_gui.admin.get-classes:
+    path: /admin/workflow/get-classes
+    defaults: { _controller: WorkflowGuiBundle:Workflow:getClasses }
