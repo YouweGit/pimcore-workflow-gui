@@ -119,7 +119,7 @@ pimcore.plugin.workflow.place = Class.create({
                 {
                     xtype: 'colorfield',
                     name: 'color',
-                    value: place.get('color'),
+                    value: (place.get('color')) ? place.get('color') : 'CCCCCC',
                     fieldLabel: t('workflow_place_color'),
                 },
                 {
