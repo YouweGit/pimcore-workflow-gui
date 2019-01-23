@@ -156,19 +156,21 @@ class WorkflowController extends AdminController
 
         $q = '%'.$request->get('query').'%';
 
-        $list = new User\Listing();
+        $list = new User\Role\Listing();
         $list->setCondition('name LIKE ?', [$q]);
         $list->setOrder('ASC');
         $list->setOrderKey('name');
         $list->load();
 
-        $users = [];
-        if (is_array($list->getUsers())) {
-            foreach ($list->getUsers() as $user) {
-                if ($user instanceof User\Role && $user->getId()) {
-                    $users[] = [
-                        'id' => $user->getId(),
-                        'name' => $user->getName(),
+        $roles = [];
+        if (is_array($list->getRoles())) {
+            
+            /** @var User\Role $role */
+            foreach ($list->getRoles() as $role) {
+                if ($role instanceof User\Role && $role->getId()) {
+                    $roles[] = [
+                        'id' => $role->getId(),
+                        'name' => $role->getName(),
                     ];
                 }
             }
@@ -176,7 +178,7 @@ class WorkflowController extends AdminController
 
         return $this->adminJson([
             'success' => true,
-            'roles' => $users,
+            'roles' => $roles,
         ]);
     }
 
