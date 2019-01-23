@@ -94,7 +94,7 @@ pimcore.plugin.workflow.transition_notification = Class.create({
 
         return Ext.create('Ext.form.ComboBox', {
             store: store,
-            name: 'notifyRules',
+            name: 'notifyRoles',
             displayField: 'name',
             valueField: 'id',
             loadingText: t('searching'),
