@@ -64,7 +64,7 @@ pimcore.plugin.workflow.transition = Class.create({
                 {
                     xtype: 'textfield',
                     name: 'iconClass',
-                    value: options.hasOwnProperty('iconClass') ? options.label : '',
+                    value: options.hasOwnProperty('iconClass') ? options.iconClass : '',
                     fieldLabel: t('workflow_transition_icon_class'),
                 },
                 {
