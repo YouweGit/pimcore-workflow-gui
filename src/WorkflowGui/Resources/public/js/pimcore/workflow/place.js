@@ -188,7 +188,11 @@ pimcore.plugin.workflow.place = Class.create({
 
                                 return data;
                             });
-
+                            
+                            if (formValues.color) {
+                                formValues.color = '#' + formValues.color;
+                            }
+                            
                             place.set('permissions', permissions);
                             place.set(formValues);
                             place.commit();
