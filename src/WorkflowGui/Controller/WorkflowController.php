@@ -200,7 +200,10 @@ class WorkflowController extends AdminController
     {
         if (isset($configuration['places'])) {
             foreach ($configuration['places'] as $placeKey => &$placeConfig) {
-                foreach ($placeConfig as $placeConfigKey => $value) {
+                if(isset($placeConfig['color'])) {
+                    if(substr($placeConfig['color'], 0, 1) !== '#') $placeConfig['color'] = '#'.$placeConfig['color'];
+                }
+				foreach ($placeConfig as $placeConfigKey => $value) {
                     if (!$value) {
                         unset($placeConfig[$placeConfigKey]);
                     }
