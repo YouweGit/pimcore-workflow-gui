@@ -20,8 +20,8 @@ Workflow GUI adds a User Interface for configuring Pimcore Workflows.
  * At the Places tab, the Places are a required field
  * At the Transitions tab, the Transitions are a required field
  
- For more information about the available options and description of the fields, go to the following URL:
- https://pimcore.com/docs/5.x/Development_Documentation/Workflow_Management/Configuration_Details.html
+For more information about the available options and description of the fields, go to the following URL:
+[Pimcore-Documentation/WorkflowManagement/ConfigurationDetails](https://pimcore.com/docs/5.x/Development_Documentation/Workflow_Management/Configuration_Details/index.html)
 
 ## Workflow History
 
