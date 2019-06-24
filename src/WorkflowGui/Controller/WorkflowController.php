@@ -35,11 +35,18 @@ class WorkflowController extends AdminController
     protected $repository;
 
     /**
-     * @param WorkflowRepositoryInterface $repository
+     * @var ConfigFileResolver
      */
-    public function __construct(WorkflowRepositoryInterface $repository)
+    protected $configResolver;
+
+    /**
+     * @param WorkflowRepositoryInterface $repository
+     * @param ConfigFileResolver          $configFileResolver
+     */
+    public function __construct(WorkflowRepositoryInterface $repository, ConfigFileResolver $configFileResolver)
     {
         $this->repository = $repository;
+        $this->configResolver = $configFileResolver;
     }
 
     /**
@@ -106,7 +113,7 @@ class WorkflowController extends AdminController
             return $this->json(['success' => false, 'message' => $ex->getMessage()]);
         }
 
-        $configPath = $this->get(ConfigFileResolver::class)->getConfigPath();
+        $configPath = $this->configResolver->getConfigPath();
 
         $contents = Yaml::parseFile($configPath);
 
@@ -133,7 +140,7 @@ class WorkflowController extends AdminController
 
         $id = $request->get('id');
 
-        $configPath = $this->get(ConfigFileResolver::class)->getConfigPath();
+        $configPath = $this->configResolver->getConfigPath();
 
         $contents = Yaml::parseFile($configPath);
 
@@ -164,7 +171,7 @@ class WorkflowController extends AdminController
 
         $roles = [];
         if (is_array($list->getRoles())) {
-            
+
             /** @var User\Role $role */
             foreach ($list->getRoles() as $role) {
                 if ($role instanceof User\Role && $role->getId()) {
