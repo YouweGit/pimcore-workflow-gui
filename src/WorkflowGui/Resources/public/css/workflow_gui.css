@@ -1,0 +1,7 @@
+.worklfow_gui_nav_icon_workflow {
+    background: url(../img/workflow.svg) center center no-repeat !important;
+}
+
+body.pimcore_version_6 .worklfow_gui_nav_icon_workflow {
+    background: url(../img/workflow_white.svg) center center no-repeat !important;
+}
