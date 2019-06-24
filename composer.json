@@ -19,7 +19,7 @@
     }
   ],
   "require": {
-    "pimcore/pimcore": "^5.4.0"
+    "pimcore/pimcore": "^5.4.0 | ^6.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -33,7 +33,7 @@
       ]
     },
     "branch-alias": {
-      "dev-master": "1.0-dev"
+      "dev-master": "1.2-dev"
     }
   }
 }
