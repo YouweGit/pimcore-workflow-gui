@@ -84,6 +84,39 @@ class WorkflowController extends AdminController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
+    public function cloneAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        $id = $request->get('id');
+        $name = $request->get('name');
+        $workflow = $this->repository->find($id);
+        $workflowByName = $this->repository->find($name);
+
+        if (!$workflow) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($workflowByName) {
+            return $this->json(['success' => false, 'message' => $this->trans('workflow_gui_workflow_with_name_already_exists')]);
+        }
+
+        $configPath = $this->configResolver->getConfigPath();
+
+        $contents = Yaml::parseFile($configPath);
+        $newWorkflow = $contents['pimcore']['workflows'][$id];
+
+        $contents['pimcore']['workflows'][$name] = $newWorkflow;
+
+        file_put_contents($configPath, Yaml::dump($contents, 100));
+
+        return $this->json(['success' => true, 'id' => $name]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function saveAction(Request $request)
     {
         $this->isGrantedOr403();
