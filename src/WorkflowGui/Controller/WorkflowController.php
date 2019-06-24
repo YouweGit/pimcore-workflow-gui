@@ -35,11 +35,18 @@ class WorkflowController extends AdminController
     protected $repository;
 
     /**
-     * @param WorkflowRepositoryInterface $repository
+     * @var ConfigFileResolver
      */
-    public function __construct(WorkflowRepositoryInterface $repository)
+    protected $configResolver;
+
+    /**
+     * @param WorkflowRepositoryInterface $repository
+     * @param ConfigFileResolver          $configFileResolver
+     */
+    public function __construct(WorkflowRepositoryInterface $repository, ConfigFileResolver $configFileResolver)
     {
         $this->repository = $repository;
+        $this->configResolver = $configFileResolver;
     }
 
     /**
@@ -77,6 +84,39 @@ class WorkflowController extends AdminController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
+    public function cloneAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        $id = $request->get('id');
+        $name = $request->get('name');
+        $workflow = $this->repository->find($id);
+        $workflowByName = $this->repository->find($name);
+
+        if (!$workflow) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($workflowByName) {
+            return $this->json(['success' => false, 'message' => $this->trans('workflow_gui_workflow_with_name_already_exists')]);
+        }
+
+        $configPath = $this->configResolver->getConfigPath();
+
+        $contents = Yaml::parseFile($configPath);
+        $newWorkflow = $contents['pimcore']['workflows'][$id];
+
+        $contents['pimcore']['workflows'][$name] = $newWorkflow;
+
+        file_put_contents($configPath, Yaml::dump($contents, 100));
+
+        return $this->json(['success' => true, 'id' => $name]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function saveAction(Request $request)
     {
         $this->isGrantedOr403();
@@ -106,7 +146,7 @@ class WorkflowController extends AdminController
             return $this->json(['success' => false, 'message' => $ex->getMessage()]);
         }
 
-        $configPath = $this->get(ConfigFileResolver::class)->getConfigPath();
+        $configPath = $this->configResolver->getConfigPath();
 
         $contents = Yaml::parseFile($configPath);
 
@@ -133,7 +173,7 @@ class WorkflowController extends AdminController
 
         $id = $request->get('id');
 
-        $configPath = $this->get(ConfigFileResolver::class)->getConfigPath();
+        $configPath = $this->configResolver->getConfigPath();
 
         $contents = Yaml::parseFile($configPath);
 
@@ -164,7 +204,7 @@ class WorkflowController extends AdminController
 
         $roles = [];
         if (is_array($list->getRoles())) {
-            
+
             /** @var User\Role $role */
             foreach ($list->getRoles() as $role) {
                 if ($role instanceof User\Role && $role->getId()) {

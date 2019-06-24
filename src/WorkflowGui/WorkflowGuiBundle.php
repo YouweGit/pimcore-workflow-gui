@@ -74,4 +74,14 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
             '/bundles/workflowgui/js/pimcore/workflow/support_strategy/service.js',
         ];
     }
+
+        /**
+     * {@inheritdoc}
+     */
+    public function getCssPaths()
+    {
+        return [
+            '/bundles/workflowgui/css/workflow_gui.css'
+        ];
+    }
 }

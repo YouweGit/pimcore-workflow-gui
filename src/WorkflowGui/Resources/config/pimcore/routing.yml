@@ -6,6 +6,10 @@ workflow_gui.admin.get:
     path: /admin/workflow/get
     defaults: { _controller: WorkflowGuiBundle:Workflow:get }
 
+workflow_gui.admin.clone:
+    path: /admin/workflow/clone
+    defaults: { _controller: WorkflowGuiBundle:Workflow:clone }
+
 workflow_gui.admin.save:
     path: /admin/workflow/save
     methods: [POST]

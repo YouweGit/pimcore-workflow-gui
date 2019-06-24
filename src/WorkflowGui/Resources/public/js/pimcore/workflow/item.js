@@ -179,6 +179,11 @@ pimcore.plugin.workflow.item = Class.create({
             ],
             buttons: [
                 {
+                    text: t('workflow_gui_clone'),
+                    iconCls: 'pimcore_icon_copy',
+                    handler: this.clone.bind(this)
+                },
+                {
                     text: t('save'),
                     iconCls: 'pimcore_icon_apply',
                     handler: this.save.bind(this)
@@ -741,6 +746,45 @@ pimcore.plugin.workflow.item = Class.create({
                 }
             }.bind(this)
         });
+    },
+
+    clone: function () {
+        var me = this,
+            id = this.id;
+
+        this.panel.setLoading(t('loading'));
+
+        Ext.MessageBox.prompt(t('workflow_gui_clone'), t('workflow_enter_the_name'), function(button, value) {
+            if (button === 'ok' && value.length > 1) {
+                Ext.Ajax.request({
+                    url: '/admin/workflow/clone',
+                    method: 'post',
+                    params: {
+                        name: value,
+                        id: id
+                    },
+                    success: function(transport) {
+                        me.panel.setLoading(false);
+
+                        var response = Ext.decode(transport.responseText);
+
+                        if (response) {
+                            if (response.success) {
+                                me.parentPanel.openWorkflow(value);
+                            }
+                            else {
+                                Ext.Msg.alert(t('workflow_invalid'), response.message);
+                            }
+                        }
+                        else {
+                            Ext.Msg.alert(t('workflow_invalid'), t('workflow_unknown_error'));
+                        }
+                    }.bind(this)
+                });
+            } else {
+                Ext.Msg.alert(t('workflow_add'), t('workflow_problem_creating_workflow'));
+            }
+        }, null, null, '');
     },
 
     validate: function () {
