@@ -104,7 +104,8 @@ pimcore.plugin.workflow.transition = Class.create({
                             xtype: 'gridcolumn',
                             dataIndex: 'name',
                             text: t('workflow_additional_field_name'),
-                            flex: 1
+                            flex: 1,
+                            regex: /[^A-Za-z0-9_]+/,
                         },
                         {
                             menuDisabled: true,
@@ -224,6 +225,7 @@ pimcore.plugin.workflow.transition = Class.create({
                     value: transition.getId(),
                     fieldLabel: t('workflow_transition_id'),
                     allowBlank: false,
+                    regex: /^[a-zA-Z_]+$/
                 },
 
                 {

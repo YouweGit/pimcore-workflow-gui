@@ -175,6 +175,7 @@ pimcore.plugin.workflow.global_action = Class.create({
                     value: globalAction.getId(),
                     fieldLabel: t('workflow_global_action_id'),
                     allowBlank: false,
+                    regex: /^[a-zA-Z_]+$/
                 },
                 {
                     xtype: 'textfield',

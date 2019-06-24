@@ -326,7 +326,8 @@ pimcore.plugin.workflow.item = Class.create({
                     name: 'name',
                     value: this.id,
                     fieldLabel: t('workflow_name'),
-                    allowBlank: false
+                    allowBlank: false,
+                    regex: /^[a-zA-Z_]+$/
                 },
                 {
                     xtype: 'checkbox',
@@ -528,15 +529,18 @@ pimcore.plugin.workflow.item = Class.create({
                                         return;
                                     }
 
-                                    var record = new WorkflowGUI.Place({
-                                        id: value
-                                    });
+                                    if (value.match(/^[a-zA-Z_]+$/)) {
+                                        var record = new WorkflowGUI.Place({
+                                            id: value
+                                        });
 
-                                    this.placesStore.add(record);
+                                        this.placesStore.add(record);
 
-                                    new pimcore.plugin.workflow.place(this.placesStore, record);
-                                } else if (button == 'cancel') {
-                                    return;
+                                        new pimcore.plugin.workflow.place(this.placesStore, record);
+                                    }
+                                    else {
+                                        Ext.Msg.alert(t('workflow_place_id'), t('workflow_problem_creating_workflow_invalid_characters'));
+                                    }
                                 }
                             }.bind(this), null, null, '');
                         }.bind(this),
@@ -599,13 +603,18 @@ pimcore.plugin.workflow.item = Class.create({
                                         return;
                                     }
 
-                                    var record = new WorkflowGUI.Transition({
-                                        id: value
-                                    });
+                                    if (value.match(/^[a-zA-Z_]+$/)) {
+                                        var record = new WorkflowGUI.Transition({
+                                            id: value
+                                        });
 
-                                    this.transitionStore.add(record);
+                                        this.transitionStore.add(record);
 
-                                    new pimcore.plugin.workflow.transition(this.transitionStore, this.placesStore, record);
+                                        new pimcore.plugin.workflow.transition(this.transitionStore, this.placesStore, record);
+                                    }
+                                    else {
+                                        Ext.Msg.alert(t('workflow_transition_id'), t('workflow_problem_creating_workflow_invalid_characters'));
+                                    }
                                 } else if (button == 'cancel') {
                                     return;
                                 }
@@ -670,13 +679,18 @@ pimcore.plugin.workflow.item = Class.create({
                                         return;
                                     }
 
-                                    var record = new WorkflowGUI.Transition({
-                                        id: value
-                                    });
+                                    if (value.match(/^[a-zA-Z_]+$/)) {
+                                        var record = new WorkflowGUI.Transition({
+                                            id: value
+                                        });
 
-                                    this.globalActionsStore.add(record);
+                                        this.globalActionsStore.add(record);
 
-                                    new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, record);
+                                        new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, record);
+                                    }
+                                    else {
+                                        Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_problem_creating_workflow_invalid_characters'));
+                                    }
                                 } else if (button == 'cancel') {
                                     return;
                                 }

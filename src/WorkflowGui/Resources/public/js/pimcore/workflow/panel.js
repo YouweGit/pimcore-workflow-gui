@@ -172,7 +172,12 @@ pimcore.plugin.workflow.panel = Class.create({
 
     addFieldComplete: function (button, value, object) {
         if (button === 'ok' && value.length > 1) {
-            new pimcore.plugin.workflow.item(value, {}, this);
+            if (value.match(/^[a-zA-Z_]+$/)) {
+                new pimcore.plugin.workflow.item(value, {}, this);
+            }
+            else {
+                Ext.Msg.alert(t('workflow_add'), t('workflow_problem_creating_workflow_invalid_characters'));
+            }
         } else if (button == 'cancel') {
 
         } else {
