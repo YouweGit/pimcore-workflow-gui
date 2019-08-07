@@ -507,7 +507,7 @@ pimcore.plugin.workflow.item = Class.create({
                         menuDisabled: true,
                         sortable: false,
                         xtype: 'actioncolumn',
-                        width: 50,
+                        width: 60,
                         items: [{
                             iconCls: 'pimcore_icon_edit',
                             tooltip: t('edit'),
@@ -581,7 +581,7 @@ pimcore.plugin.workflow.item = Class.create({
                         menuDisabled: true,
                         sortable: false,
                         xtype: 'actioncolumn',
-                        width: 50,
+                        width: 60,
                         items: [{
                             iconCls: 'pimcore_icon_edit',
                             tooltip: t('edit'),
@@ -657,7 +657,7 @@ pimcore.plugin.workflow.item = Class.create({
                         menuDisabled: true,
                         sortable: false,
                         xtype: 'actioncolumn',
-                        width: 50,
+                        width: 60,
                         items: [{
                             iconCls: 'pimcore_icon_edit',
                             tooltip: t('edit'),
