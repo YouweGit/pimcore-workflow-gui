@@ -1,7 +1,7 @@
 # Pimcore - Workflow GUI
 
 ## Requirements
- - Pimcore 5.4
+ - Pimcore 5.4 -> 6.x
 
 Workflow GUI adds a User Interface for configuring Pimcore Workflows.
 
