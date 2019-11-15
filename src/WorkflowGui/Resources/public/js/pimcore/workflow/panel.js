@@ -63,7 +63,7 @@ pimcore.plugin.workflow.panel = Class.create({
                     }
                 }
             });
-            console.log(store);
+    
             this.grid = Ext.create('Ext.grid.Panel', {
                 store: store,
                 region: 'west',
