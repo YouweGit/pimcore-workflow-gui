@@ -57,9 +57,17 @@ class WorkflowController extends AdminController
     {
         $this->isGrantedOr403();
 
-        return $this->json(array_map(function ($workflowKey) {
-            return ['id' => $workflowKey];
-        }, array_keys($this->repository->findAll())));
+        $workflows = $this->repository->findAll();
+
+        $results = [];
+        foreach ($workflows as $id => $workflow) {
+            $results[] = [
+                'id' => $id,
+                'label' => $workflow['label']
+            ];
+        }
+
+        return $this->json($results);
     }
 
     /**

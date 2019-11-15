@@ -57,12 +57,13 @@ pimcore.plugin.workflow.panel = Class.create({
                     reader: {
                         type: 'json',
                         fields: [{
-                            name: 'id'
+                            name: 'id',
+                            label: 'label'
                         }]
                     }
                 }
             });
-
+    
             this.grid = Ext.create('Ext.grid.Panel', {
                 store: store,
                 region: 'west',
@@ -74,7 +75,7 @@ pimcore.plugin.workflow.panel = Class.create({
                 listeners: this.getGridListeners(),
                 hideHeaders: true,
                 columns: [{
-                    dataIndex: 'id',
+                    dataIndex: 'label',
                     flex: 1,
                 }],
                 tbar: {
