@@ -714,12 +714,23 @@ pimcore.plugin.workflow.item = Class.create({
 
     getVisualizationPanel: function () {
         this.visualizationPanel = new Ext.Panel({
-            id: panelId,
-            title: t('Data Dictionary'),
-            iconCls: 'pimcore_icon_multihref',
+            title: t('Visualization'),
+            icon: '/bundles/pimcoreadmin/img/flat-color-icons/tree_structure.svg',
             border: false,
             layout: 'fit',
-            closable: true,
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [{
+                    xtype: 'button',
+                    text: t('open_in_new_window')+' / '+t('download'),
+                    listeners: {
+                        click: function() {
+                            window.open('/admin/workflow/visualizeImage?workflow='+this.id+'');
+                        }.bind(this)
+                    }
+                }]
+            }],
             items: [{
                 html: '<iframe src="/admin/workflow/visualize?workflow='+this.id+'" width="100%" height="100%" frameborder="0"></iframe>',
                 autoHeight: true

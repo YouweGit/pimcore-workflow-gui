@@ -318,8 +318,6 @@ class WorkflowController extends AdminController
     {
         $this->isGrantedOr403();
 
-        $this->view->workflow = $request->get('workflow');
-
         try {
             $dotExecutable = Console::getExecutable('dot');
         } catch(\Exception $e) {
@@ -329,7 +327,12 @@ class WorkflowController extends AdminController
         try {
             $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$request->get('workflow').' | "'.$dotExecutable.'" -Tsvg';
 
-            $this->view->svgCode = Console::exec($cliCommand);
+            return $this->render(
+                "WorkflowGuiBundle:Workflow:visualize.html.php",
+                [
+                    'image' => Console::exec($cliCommand)
+                ]
+            );
         } catch (\Throwable $e) {
             return new Response($e->getMessage());
         }
@@ -349,7 +352,19 @@ class WorkflowController extends AdminController
             $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$request->get('workflow').' | "'.$dotExecutable.'" -Tpng';
 
             $image = Console::exec($cliCommand);
-            return new BinaryFileResponse($image);
+            $response = new Response();
+
+            // Set headers
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-type', 'image/png' );
+            $response->headers->set('Content-length',  strlen($image));
+
+            // Send headers before outputting anything
+            $response->sendHeaders();
+
+            $response->setContent( $image );
+
+            return $response;
         } catch (\Throwable $e) {
             return new Response($e->getMessage());
         }
