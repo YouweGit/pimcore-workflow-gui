@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace Youwe\Pimcore\WorkflowGui\Controller;
 
-use DataDictionaryBundle\Graph\Presenters\GraphViz;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
