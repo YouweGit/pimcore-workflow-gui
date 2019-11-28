@@ -328,24 +328,6 @@ class WorkflowController extends AdminController
         }
     }
 
-    /**
-     * @param string $workflow name of workflow
-     * @param string $format output format, e.g. svg or png
-     *
-     * @return string
-     * @throws \Exception
-     */
-    private function getVisualization($workflow, $format) {
-        try {
-            $dotExecutable = Console::getExecutable('dot');
-        } catch(\Exception $e) {
-            return new Response('Please install graphviz to visualize workflows');
-        }
-
-        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
-        return Console::exec($cliCommand);
-    }
-
     public function visualizeImageAction(Request $request)
     {
         $this->isGrantedOr403();
@@ -370,5 +352,23 @@ class WorkflowController extends AdminController
         } catch (\Throwable $e) {
             return new Response($e->getMessage());
         }
+    }
+
+    /**
+     * @param string $workflow name of workflow
+     * @param string $format output format, e.g. svg or png
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function getVisualization($workflow, $format) {
+        try {
+            $dotExecutable = Console::getExecutable('dot');
+        } catch(\Exception $e) {
+            return new Response('Please install graphviz to visualize workflows');
+        }
+
+        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
+        return Console::exec($cliCommand);
     }
 }
