@@ -21,7 +21,6 @@ use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
 use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
