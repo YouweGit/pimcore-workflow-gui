@@ -721,6 +721,7 @@ pimcore.plugin.workflow.item = Class.create({
             tbar: [{
                 xtype: 'button',
                 text: t('open_in_new_window')+' / '+t('download'),
+                iconCls: 'pimcore_icon_open',
                 handler: function () {
                     window.open('/admin/workflow/visualizeImage?workflow=' + this.id + '');
                 }.bind(this)
