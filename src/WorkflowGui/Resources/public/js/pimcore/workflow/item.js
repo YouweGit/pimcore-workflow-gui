@@ -175,7 +175,8 @@ pimcore.plugin.workflow.item = Class.create({
                 this.getSupportsPanel(),
                 this.getPlacesPanel(),
                 this.getTransitionsPanel(),
-                this.getGlobalActionsPanel()
+                this.getGlobalActionsPanel(),
+                this.getVisualizationPanel()
             ],
             buttons: [
                 {
@@ -711,6 +712,43 @@ pimcore.plugin.workflow.item = Class.create({
         return this.globalActionsPanel
     },
 
+    getVisualizationPanel: function () {
+        this.visualizationPanel = new Ext.Panel({
+            title: t('Visualization'),
+            icon: '/bundles/pimcoreadmin/img/flat-color-icons/tree_structure.svg',
+            border: false,
+            layout: 'fit',
+            tbar: [
+                {
+                xtype: 'button',
+                text: t('open_in_new_window')+' / '+t('download'),
+                iconCls: 'pimcore_icon_open',
+                handler: function () {
+                    window.open('/admin/workflow/visualize_image?workflow=' + this.id + '');
+                }.bind(this)
+            }],
+            items: [{
+                html: '<iframe src="about:blank" width="100%" height="100%" frameborder="0" class="visualizationFrame"></iframe>',
+                autoHeight: true
+            }],
+            listeners: {
+                afterrender: function() {
+                    this.reloadVisualization();
+                }.bind(this)
+            }
+        });
+
+        return this.visualizationPanel;
+    },
+
+    reloadVisualization: function () {
+        try {
+            this.visualizationPanel.getEl().selectNode(".visualizationFrame").src = '/admin/workflow/visualize?workflow='+this.id;
+        }catch (e) {
+            console.log(e);
+        }
+    },
+
     save: function () {
         if (!this.validate()) {
             Ext.Msg.alert(t('workflow_invalid'), t('workflow_invalid_detail'));
@@ -872,6 +910,7 @@ pimcore.plugin.workflow.item = Class.create({
 
     saveOnComplete: function () {
         this.parentPanel.grid.getStore().load();
+        this.reloadVisualization();
 
         pimcore.helpers.showNotification(t('success'), t('workflow_saved_successfully'), 'success');
     },
