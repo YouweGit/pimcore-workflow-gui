@@ -16,10 +16,14 @@ declare(strict_types=1);
 
 namespace Youwe\Pimcore\WorkflowGui\Controller;
 
+use DataDictionaryBundle\Graph\Presenters\GraphViz;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
+use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -308,5 +312,46 @@ class WorkflowController extends AdminController
         }
 
         return $configuration;
+    }
+
+    public function visualizeAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        $this->view->workflow = $request->get('workflow');
+
+        try {
+            $dotExecutable = Console::getExecutable('dot');
+        } catch(\Exception $e) {
+            return new Response('Please install graphviz to visualize workflows');
+        }
+
+        try {
+            $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$request->get('workflow').' | "'.$dotExecutable.'" -Tsvg';
+
+            $this->view->svgCode = Console::exec($cliCommand);
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    public function visualizeImageAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        try {
+            $dotExecutable = Console::getExecutable('dot');
+        } catch(\Exception $e) {
+            return new Response('Please install graphviz to visualize workflows');
+        }
+
+        try {
+            $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$request->get('workflow').' | "'.$dotExecutable.'" -Tpng';
+
+            $image = Console::exec($cliCommand);
+            return new BinaryFileResponse($image);
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage());
+        }
     }
 }

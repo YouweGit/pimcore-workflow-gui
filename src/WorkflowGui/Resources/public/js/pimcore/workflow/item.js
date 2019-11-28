@@ -175,7 +175,8 @@ pimcore.plugin.workflow.item = Class.create({
                 this.getSupportsPanel(),
                 this.getPlacesPanel(),
                 this.getTransitionsPanel(),
-                this.getGlobalActionsPanel()
+                this.getGlobalActionsPanel(),
+                this.getVisualizationPanel()
             ],
             buttons: [
                 {
@@ -709,6 +710,23 @@ pimcore.plugin.workflow.item = Class.create({
         });
 
         return this.globalActionsPanel
+    },
+
+    getVisualizationPanel: function () {
+        this.visualizationPanel = new Ext.Panel({
+            id: panelId,
+            title: t('Data Dictionary'),
+            iconCls: 'pimcore_icon_multihref',
+            border: false,
+            layout: 'fit',
+            closable: true,
+            items: [{
+                html: '<iframe src="/admin/workflow/visualize?workflow='+this.id+'" width="100%" height="100%" frameborder="0"></iframe>',
+                autoHeight: true
+            }]
+        });
+
+        return this.visualizationPanel;
     },
 
     save: function () {
