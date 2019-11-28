@@ -25,8 +25,8 @@ workflow_gui.admin.visualize:
     methods: [GET]
     defaults: { _controller: WorkflowGuiBundle:Workflow:visualize }
 
-workflow_gui.admin.visualizeImage:
-    path: /admin/workflow/visualizeImage
+workflow_gui.admin.visualize_image:
+    path: /admin/workflow/visualize_image
     methods: [GET]
     defaults: { _controller: WorkflowGuiBundle:Workflow:visualizeImage }
 

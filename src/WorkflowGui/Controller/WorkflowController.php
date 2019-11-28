@@ -319,18 +319,10 @@ class WorkflowController extends AdminController
         $this->isGrantedOr403();
 
         try {
-            $dotExecutable = Console::getExecutable('dot');
-        } catch(\Exception $e) {
-            return new Response('Please install graphviz to visualize workflows');
-        }
-
-        try {
-            $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$request->get('workflow').' | "'.$dotExecutable.'" -Tsvg';
-
             return $this->render(
-                "WorkflowGuiBundle:Workflow:visualize.html.php",
+                'WorkflowGuiBundle:Workflow:visualize.html.php',
                 [
-                    'image' => Console::exec($cliCommand)
+                    'image' => $this->getVisualization($request->get('workflow'), 'svg')
                 ]
             );
         } catch (\Throwable $e) {
@@ -338,20 +330,32 @@ class WorkflowController extends AdminController
         }
     }
 
-    public function visualizeImageAction(Request $request)
-    {
-        $this->isGrantedOr403();
-
+    /**
+     * @param string $workflow name of workflow
+     * @param string $format output format, e.g. svg or png
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function getVisualization($workflow, $format) {
         try {
             $dotExecutable = Console::getExecutable('dot');
         } catch(\Exception $e) {
             return new Response('Please install graphviz to visualize workflows');
         }
 
-        try {
-            $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$request->get('workflow').' | "'.$dotExecutable.'" -Tpng';
+        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
+        return Console::exec($cliCommand);
+    }
 
-            $image = Console::exec($cliCommand);
+    public function visualizeImageAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        try {
+
+            $image = $this->getVisualization($request->get('workflow'), 'png');
+
             $response = new Response();
 
             // Set headers

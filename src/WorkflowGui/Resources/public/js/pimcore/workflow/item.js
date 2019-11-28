@@ -718,21 +718,35 @@ pimcore.plugin.workflow.item = Class.create({
             icon: '/bundles/pimcoreadmin/img/flat-color-icons/tree_structure.svg',
             border: false,
             layout: 'fit',
-            tbar: [{
+            tbar: [
+                {
                 xtype: 'button',
                 text: t('open_in_new_window')+' / '+t('download'),
                 iconCls: 'pimcore_icon_open',
                 handler: function () {
-                    window.open('/admin/workflow/visualizeImage?workflow=' + this.id + '');
+                    window.open('/admin/workflow/visualize_image?workflow=' + this.id + '');
                 }.bind(this)
             }],
             items: [{
-                html: '<iframe src="/admin/workflow/visualize?workflow='+this.id+'" width="100%" height="100%" frameborder="0"></iframe>',
+                html: '<iframe src="about:blank" width="100%" height="100%" frameborder="0" class="visualizationFrame"></iframe>',
                 autoHeight: true
-            }]
+            }],
+            listeners: {
+                afterrender: function() {
+                    this.reloadVisualization();
+                }.bind(this)
+            }
         });
 
         return this.visualizationPanel;
+    },
+
+    reloadVisualization: function () {
+        try {
+            this.visualizationPanel.getEl().selectNode(".visualizationFrame").src = '/admin/workflow/visualize?workflow='+this.id;
+        }catch (e) {
+            console.log(e);
+        }
     },
 
     save: function () {
@@ -896,6 +910,7 @@ pimcore.plugin.workflow.item = Class.create({
 
     saveOnComplete: function () {
         this.parentPanel.grid.getStore().load();
+        this.reloadVisualization();
 
         pimcore.helpers.showNotification(t('success'), t('workflow_saved_successfully'), 'success');
     },
