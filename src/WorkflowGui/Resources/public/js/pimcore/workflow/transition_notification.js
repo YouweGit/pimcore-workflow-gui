@@ -128,7 +128,6 @@ pimcore.plugin.workflow.transition_notification = Class.create({
                     name: 'condition',
                     value: notification.get('condition'),
                     fieldLabel: t('workflow_transition_notification_condition'),
-                    allowBlank: false,
                 },
                 this.getUserCombobox(notification.get('notifyUsers')),
                 this.getRolesCombobox(notification.get('notifyRoles')),
