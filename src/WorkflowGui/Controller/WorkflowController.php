@@ -19,7 +19,9 @@ namespace Youwe\Pimcore\WorkflowGui\Controller;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
+use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -308,5 +310,65 @@ class WorkflowController extends AdminController
         }
 
         return $configuration;
+    }
+
+    public function visualizeAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        try {
+            return $this->render(
+                'WorkflowGuiBundle:Workflow:visualize.html.php',
+                [
+                    'image' => $this->getVisualization($request->get('workflow'), 'svg')
+                ]
+            );
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    public function visualizeImageAction(Request $request)
+    {
+        $this->isGrantedOr403();
+
+        try {
+
+            $image = $this->getVisualization($request->get('workflow'), 'png');
+
+            $response = new Response();
+
+            // Set headers
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-type', 'image/png' );
+            $response->headers->set('Content-length',  strlen($image));
+
+            // Send headers before outputting anything
+            $response->sendHeaders();
+
+            $response->setContent( $image );
+
+            return $response;
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage());
+        }
+    }
+
+    /**
+     * @param string $workflow name of workflow
+     * @param string $format output format, e.g. svg or png
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function getVisualization($workflow, $format) {
+        try {
+            $dotExecutable = Console::getExecutable('dot');
+        } catch(\Exception $e) {
+            return new Response('Please install graphviz to visualize workflows');
+        }
+
+        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
+        return Console::exec($cliCommand);
     }
 }
