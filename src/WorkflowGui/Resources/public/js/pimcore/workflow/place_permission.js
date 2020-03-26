@@ -76,7 +76,7 @@ pimcore.plugin.workflow.place_permission = Class.create({
                 this.getPermissionCheckbox(permission, 'properties'),
                 this.getPermissionCheckbox(permission, 'modify'),
                 {
-                    xtype: 'numberfield',
+                    xtype: 'textfield',
                     name: 'objectLayout',
                     value: permission.get('objectLayout'),
                     fieldLabel: t('workflow_place_permission_object_layout')
