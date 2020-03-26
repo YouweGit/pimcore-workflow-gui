@@ -213,7 +213,7 @@ pimcore.plugin.workflow.item = Class.create({
         var markingStoreArgumentsData = this.data.hasOwnProperty('marking_store') ? this.data.marking_store.arguments : [];
         var markingStoreArguments = new Ext.data.ArrayStore({
             data: markingStoreArgumentsData.map(function(value, index) {
-                return [[value]];
+                return [value];
             }),
             fields: [
                 'argument',
