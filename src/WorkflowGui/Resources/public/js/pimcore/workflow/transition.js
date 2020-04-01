@@ -75,6 +75,7 @@ pimcore.plugin.workflow.transition = Class.create({
                         fields: ['type'],
                         data: [
                             ['no_change'],
+                            ['save_version'],
                             ['force_unpublished'],
                             ['force_published'],
                         ]
