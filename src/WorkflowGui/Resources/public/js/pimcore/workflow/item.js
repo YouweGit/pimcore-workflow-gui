@@ -370,12 +370,15 @@ pimcore.plugin.workflow.item = Class.create({
                     xtype: 'combobox',
                     fieldLabel: t('workflow_type'),
                     name: 'type',
-                    store: Ext.data.ArrayStore({
-                        fields: ['type'],
-                        data: [['workflow'], ['state_machine']]
+                    store: Ext.data.Store({
+                        fields: ['type', 'label'],
+                        data: [
+                           {type: 'workflow', label: t('workflow_type_workflow') },
+                           {type: 'state_machine', label: t('workflow_type_state_machine') }
+                        ]
                     }),
                     value: this.data.type ? this.data.type : 'workflow',
-                    displayField: 'type',
+                    displayField: 'label',
                     valueField: 'type',
                     allowBlank: false
                 },
