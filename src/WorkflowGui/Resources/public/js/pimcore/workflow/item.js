@@ -118,6 +118,9 @@ pimcore.plugin.workflow.item = Class.create({
         places = Object.keys(places).map(function (objectKey, index) {
             var place = places[objectKey];
             place['id'] = objectKey;
+            place['label'] = (place.label && place.label.lenght > 0)
+                ? t(place.label)
+                : objectKey;
 
             return place;
         });
@@ -362,7 +365,7 @@ pimcore.plugin.workflow.item = Class.create({
                     store: this.placesStore,
                     name: 'initial_place',
                     value: this.data.initial_place,
-                    displayField: 'id',
+                    displayField: 'label',
                     valueField: 'id',
                     queryMode: 'local'
                 },

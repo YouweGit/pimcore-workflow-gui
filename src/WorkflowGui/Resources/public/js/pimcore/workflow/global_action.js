@@ -195,7 +195,7 @@ pimcore.plugin.workflow.global_action = Class.create({
                     fieldLabel: t('workflow_global_action_to'),
                     store: this.placesStore,
                     value: globalAction.get('to'),
-                    displayField: 'id',
+                    displayField: 'label',
                     valueField: 'id',
                     multiSelect: true,
                     queryMode: 'local',
