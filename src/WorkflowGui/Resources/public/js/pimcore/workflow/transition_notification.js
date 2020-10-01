@@ -132,6 +132,22 @@ pimcore.plugin.workflow.transition_notification = Class.create({
                 this.getUserCombobox(notification.get('notifyUsers')),
                 this.getRolesCombobox(notification.get('notifyRoles')),
                 {
+                    xtype: 'multiselect',
+                    fieldLabel: t('workflow_transition_notification_channel_types'),
+                    name: 'channelType',
+                    store: Ext.data.ArrayStore({
+                        fields: ['type'],
+                        data: [
+                            ['mail'],
+                            ['pimcore_notification'],
+                        ]
+                    }),
+                    value: notification.get('channelType') ? notification.get('channelType') : 'mail',
+                    displayField: 'type',
+                    valueField: 'type',
+                    allowBlank: false
+                },
+                {
                     xtype: 'combobox',
                     fieldLabel: t('workflow_transition_notification_mail_type'),
                     name: 'mailType',
