@@ -333,7 +333,6 @@ class WorkflowController extends AdminController
         $this->isGrantedOr403();
 
         try {
-
             $image = $this->getVisualization($request->get('workflow'), 'png');
 
             $response = new Response();
@@ -363,9 +362,9 @@ class WorkflowController extends AdminController
      */
     private function getVisualization($workflow, $format) {
         try {
-            $dotExecutable = Console::getExecutable('dot');
+            $dotExecutable = Console::getExecutable('dot', true);
         } catch(\Exception $e) {
-            return new Response('Please install graphviz to visualize workflows');
+            throw new \Exception('Please install graphviz to visualize workflows');
         }
 
         $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
