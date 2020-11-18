@@ -14,7 +14,7 @@
 pimcore.registerNS('pimcore.plugin.workflow.item');
 pimcore.plugin.workflow.item = Class.create({
 
-    initialize: function (id, data, parentPanel, panelKey) {
+    initialize: function(id, data, parentPanel, panelKey) {
         var me = this;
 
         me.panelKey = panelKey;
@@ -115,12 +115,12 @@ pimcore.plugin.workflow.item = Class.create({
 
         var places = this.data.hasOwnProperty('places') ? this.data.places : {};
 
-        places = Object.keys(places).map(function (objectKey, index) {
+        places = Object.keys(places).map(function(objectKey, index) {
             var place = places[objectKey];
             place['id'] = objectKey;
-            place['label'] = (place.label && place.label.lenght > 0)
-                ? t(place.label)
-                : objectKey;
+            place['label'] = (place.label && place.label.length > 0) ?
+                t(place.label) :
+                objectKey;
 
             return place;
         });
@@ -129,7 +129,7 @@ pimcore.plugin.workflow.item = Class.create({
 
         var transitions = this.data.hasOwnProperty('transitions') ? this.data.transitions : {};
 
-        transitions = Object.keys(transitions).map(function (objectKey, index) {
+        transitions = Object.keys(transitions).map(function(objectKey, index) {
             var transition = transitions[objectKey];
             transition['id'] = objectKey;
 
@@ -140,7 +140,7 @@ pimcore.plugin.workflow.item = Class.create({
 
         var globalActions = this.data.hasOwnProperty('globalActions') ? this.data.globalActions : {};
 
-        globalActions = Object.keys(globalActions).map(function (objectKey, index) {
+        globalActions = Object.keys(globalActions).map(function(objectKey, index) {
             var globalAction = globalActions[objectKey];
             globalAction['id'] = objectKey;
 
@@ -152,7 +152,7 @@ pimcore.plugin.workflow.item = Class.create({
         me.addLayout();
     },
 
-    loadComplete: function (transport) {
+    loadComplete: function(transport) {
         var me = this,
             response = Ext.decode(transport.responseText);
 
@@ -163,7 +163,7 @@ pimcore.plugin.workflow.item = Class.create({
         }
     },
 
-    addLayout: function () {
+    addLayout: function() {
         this.panel = new Ext.TabPanel({
             activeTab: 0,
             deferredRender: false,
@@ -181,8 +181,7 @@ pimcore.plugin.workflow.item = Class.create({
                 this.getGlobalActionsPanel(),
                 this.getVisualizationPanel()
             ],
-            buttons: [
-                {
+            buttons: [{
                     text: t('workflow_gui_clone'),
                     iconCls: 'pimcore_icon_copy',
                     handler: this.clone.bind(this)
@@ -195,7 +194,7 @@ pimcore.plugin.workflow.item = Class.create({
             ]
         });
 
-        this.panel.on('destroy', function () {
+        this.panel.on('destroy', function() {
             delete this.parentPanel.panels[this.panelKey];
         }.bind(this));
 
@@ -205,14 +204,14 @@ pimcore.plugin.workflow.item = Class.create({
         pimcore.layout.refresh();
     },
 
-    getDefaults: function () {
+    getDefaults: function() {
         return {
             width: '100%',
             labelWidth: 200
         };
     },
 
-    getSettingsPanel: function () {
+    getSettingsPanel: function() {
         var markingStoreArgumentsData = this.data.hasOwnProperty('marking_store') ? this.data.marking_store.arguments : [];
         var markingStoreArguments = new Ext.data.ArrayStore({
             data: markingStoreArgumentsData.map(function(value, index) {
@@ -225,8 +224,7 @@ pimcore.plugin.workflow.item = Class.create({
 
         this.markingStorePanel = new Ext.form.Panel({
             defaults: this.getDefaults(),
-            items: [
-                {
+            items: [{
                     xtype: 'combobox',
                     itemId: 'markingStoreType',
                     fieldLabel: t('workflow_marking_store_type'),
@@ -252,7 +250,7 @@ pimcore.plugin.workflow.item = Class.create({
                     value: this.data.marking_store ? this.data.marking_store.service : null,
                     fieldLabel: t('workflow_marking_store_service'),
                     listeners: {
-                        change: function (cmb, newValue) {
+                        change: function(cmb, newValue) {
                             if (newValue) {
                                 this.markingStorePanel.down('#markingStoreArgumentsGrid').disable();
                                 this.markingStorePanel.down('#markingStoreType').disable();
@@ -276,8 +274,7 @@ pimcore.plugin.workflow.item = Class.create({
                         })
                     ],
                     sm: Ext.create('Ext.selection.RowModel', {}),
-                    columns: [
-                        {
+                    columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'argument',
                             text: t('workflow_marking_store_argument'),
@@ -294,21 +291,19 @@ pimcore.plugin.workflow.item = Class.create({
                             items: [{
                                 iconCls: 'pimcore_icon_delete',
                                 tooltip: t('delete'),
-                                handler: function (grid, rowIndex, colIndex) {
+                                handler: function(grid, rowIndex, colIndex) {
                                     grid.store.removeAt(rowIndex);
                                 }.bind(this)
                             }]
                         },
                     ],
-                    tbar: [
-                        {
-                            text: t('add'),
-                            handler: function (btn) {
-                                btn.up('grid').store.add({});
-                            },
-                            iconCls: 'pimcore_icon_add'
-                        }
-                    ],
+                    tbar: [{
+                        text: t('add'),
+                        handler: function(btn) {
+                            btn.up('grid').store.add({});
+                        },
+                        iconCls: 'pimcore_icon_add'
+                    }],
                     viewConfig: {
                         forceFit: true
                     }
@@ -318,20 +313,17 @@ pimcore.plugin.workflow.item = Class.create({
 
         this.auditTrailPanel = new Ext.form.Panel({
             defaults: this.getDefaults(),
-            items: [
-                {
-                    xtype: 'checkbox',
-                    name: 'enabled',
-                    value: this.data.hasOwnProperty('audit_trail') ? this.data.audit_trail.enabled : false,
-                    fieldLabel: t('workflow_audit_trail_enabled')
-                }
-            ]
+            items: [{
+                xtype: 'checkbox',
+                name: 'enabled',
+                value: this.data.hasOwnProperty('audit_trail') ? this.data.audit_trail.enabled : false,
+                fieldLabel: t('workflow_audit_trail_enabled')
+            }]
         });
 
         this.settingsPanelForm = new Ext.form.Panel({
             defaults: this.getDefaults(),
-            items: [
-                {
+            items: [{
                     xtype: 'textfield',
                     name: 'name',
                     value: this.id,
@@ -376,8 +368,8 @@ pimcore.plugin.workflow.item = Class.create({
                     store: Ext.data.Store({
                         fields: ['type', 'label'],
                         data: [
-                           {type: 'workflow', label: t('workflow_type_workflow') },
-                           {type: 'state_machine', label: t('workflow_type_state_machine') }
+                            { type: 'workflow', label: t('workflow_type_workflow') },
+                            { type: 'state_machine', label: t('workflow_type_state_machine') }
                         ]
                     }),
                     value: this.data.type ? this.data.type : 'workflow',
@@ -395,8 +387,7 @@ pimcore.plugin.workflow.item = Class.create({
             iconCls: 'pimcore_icon_settings',
             padding: 10,
             defaults: this.getDefaults(),
-            items: [
-                {
+            items: [{
                     xtype: 'fieldset',
                     title: t('workflow_settings'),
                     defaults: this.getDefaults(),
@@ -420,7 +411,7 @@ pimcore.plugin.workflow.item = Class.create({
         return this.settingsPanel;
     },
 
-    getSupportsPanel: function () {
+    getSupportsPanel: function() {
         var supportType = 'simple';
 
         if (!this.data.hasOwnProperty('support_strategy')) {
@@ -442,8 +433,7 @@ pimcore.plugin.workflow.item = Class.create({
             iconCls: 'pimcore_icon_settings',
             padding: 10,
             defaults: this.getDefaults(),
-            items: [
-                {
+            items: [{
                     xtype: 'combobox',
                     itemId: 'supportStrategy',
                     fieldLabel: t('workflow_support_strategy'),
@@ -459,7 +449,7 @@ pimcore.plugin.workflow.item = Class.create({
                     displayField: 'support_strategy',
                     valueField: 'support_strategy',
                     listeners: {
-                        change: function (cmb, newValue) {
+                        change: function(cmb, newValue) {
                             this.supportPanelDetailPanel = new pimcore.plugin.workflow.support_strategy[newValue]();
 
                             this.supportsPanel.down('#supportStrategySettings').removeAll();
@@ -479,7 +469,7 @@ pimcore.plugin.workflow.item = Class.create({
         return this.supportsPanel;
     },
 
-    getPlacesPanel: function () {
+    getPlacesPanel: function() {
         this.placesPanel = new Ext.Panel({
             border: false,
             autoScroll: true,
@@ -492,8 +482,7 @@ pimcore.plugin.workflow.item = Class.create({
                 title: t('workflow_places'),
                 margin: '0 0 15 0',
                 store: this.placesStore,
-                columns: [
-                    {
+                columns: [{
                         xtype: 'gridcolumn',
                         dataIndex: 'id',
                         text: t('workflow_place_id'),
@@ -519,54 +508,51 @@ pimcore.plugin.workflow.item = Class.create({
                         items: [{
                             iconCls: 'pimcore_icon_edit',
                             tooltip: t('edit'),
-                            handler: function (grid, rowIndex, colIndex) {
+                            handler: function(grid, rowIndex, colIndex) {
                                 new pimcore.plugin.workflow.place(this.placesStore, grid.store.getAt(rowIndex));
                             }.bind(this)
                         }, {
                             iconCls: 'pimcore_icon_delete',
                             tooltip: t('delete'),
-                            handler: function (grid, rowIndex, colIndex) {
+                            handler: function(grid, rowIndex, colIndex) {
                                 grid.store.removeAt(rowIndex);
                             }.bind(this)
                         }]
                     },
                 ],
-                tbar: [
-                    {
-                        text: t('add'),
-                        handler: function (btn) {
-                            Ext.MessageBox.prompt(t('workflow_place_id'), t('workflow_enter_place_id'), function (button, value) {
-                                if (button === 'ok') {
-                                    if (this.placesStore.getById(value)) {
-                                        Ext.Msg.alert(t('workflow_place_id'), t('workflow_place_with_id_already_exists'));
-                                        return;
-                                    }
-
-                                    if (value.match(/^[a-zA-Z_]+$/)) {
-                                        var record = new WorkflowGUI.Place({
-                                            id: value
-                                        });
-
-                                        this.placesStore.add(record);
-
-                                        new pimcore.plugin.workflow.place(this.placesStore, record);
-                                    }
-                                    else {
-                                        Ext.Msg.alert(t('workflow_place_id'), t('workflow_problem_creating_workflow_invalid_characters'));
-                                    }
+                tbar: [{
+                    text: t('add'),
+                    handler: function(btn) {
+                        Ext.MessageBox.prompt(t('workflow_place_id'), t('workflow_enter_place_id'), function(button, value) {
+                            if (button === 'ok') {
+                                if (this.placesStore.getById(value)) {
+                                    Ext.Msg.alert(t('workflow_place_id'), t('workflow_place_with_id_already_exists'));
+                                    return;
                                 }
-                            }.bind(this), null, null, '');
-                        }.bind(this),
-                        iconCls: 'pimcore_icon_add'
-                    }
-                ]
+
+                                if (value.match(/^[a-zA-Z_]+$/)) {
+                                    var record = new WorkflowGUI.Place({
+                                        id: value
+                                    });
+
+                                    this.placesStore.add(record);
+
+                                    new pimcore.plugin.workflow.place(this.placesStore, record);
+                                } else {
+                                    Ext.Msg.alert(t('workflow_place_id'), t('workflow_problem_creating_workflow_invalid_characters'));
+                                }
+                            }
+                        }.bind(this), null, null, '');
+                    }.bind(this),
+                    iconCls: 'pimcore_icon_add'
+                }]
             }]
         });
 
         return this.placesPanel;
     },
 
-    getTransitionsPanel: function () {
+    getTransitionsPanel: function() {
         this.transitionsPanel = new Ext.Panel({
             border: false,
             autoScroll: true,
@@ -578,8 +564,7 @@ pimcore.plugin.workflow.item = Class.create({
                 title: t('workflow_transitions'),
                 margin: '0 0 15 0',
                 store: this.transitionStore,
-                columns: [
-                    {
+                columns: [{
                         xtype: 'gridcolumn',
                         dataIndex: 'id',
                         text: t('workflow_transition_id'),
@@ -593,56 +578,53 @@ pimcore.plugin.workflow.item = Class.create({
                         items: [{
                             iconCls: 'pimcore_icon_edit',
                             tooltip: t('edit'),
-                            handler: function (grid, rowIndex, colIndex) {
+                            handler: function(grid, rowIndex, colIndex) {
                                 new pimcore.plugin.workflow.transition(this.transitionStore, this.placesStore, grid.store.getAt(rowIndex));
                             }.bind(this)
                         }, {
                             iconCls: 'pimcore_icon_delete',
                             tooltip: t('delete'),
-                            handler: function (grid, rowIndex, colIndex) {
+                            handler: function(grid, rowIndex, colIndex) {
                                 grid.store.removeAt(rowIndex);
                             }.bind(this)
                         }]
                     },
                 ],
-                tbar: [
-                    {
-                        text: t('add'),
-                        handler: function (btn) {
-                            Ext.MessageBox.prompt(t('workflow_transition_id'), t('workflow_enter_transition_id'), function (button, value) {
-                                if (button === 'ok') {
-                                    if (this.transitionStore.getById(value)) {
-                                        Ext.Msg.alert(t('workflow_transition_id'), t('workflow_transition_with_id_already_exists'));
-                                        return;
-                                    }
-
-                                    if (value.match(/^[a-zA-Z_]+$/)) {
-                                        var record = new WorkflowGUI.Transition({
-                                            id: value
-                                        });
-
-                                        this.transitionStore.add(record);
-
-                                        new pimcore.plugin.workflow.transition(this.transitionStore, this.placesStore, record);
-                                    }
-                                    else {
-                                        Ext.Msg.alert(t('workflow_transition_id'), t('workflow_problem_creating_workflow_invalid_characters'));
-                                    }
-                                } else if (button == 'cancel') {
+                tbar: [{
+                    text: t('add'),
+                    handler: function(btn) {
+                        Ext.MessageBox.prompt(t('workflow_transition_id'), t('workflow_enter_transition_id'), function(button, value) {
+                            if (button === 'ok') {
+                                if (this.transitionStore.getById(value)) {
+                                    Ext.Msg.alert(t('workflow_transition_id'), t('workflow_transition_with_id_already_exists'));
                                     return;
                                 }
-                            }.bind(this), null, null, '');
-                        }.bind(this),
-                        iconCls: 'pimcore_icon_add'
-                    }
-                ]
+
+                                if (value.match(/^[a-zA-Z_]+$/)) {
+                                    var record = new WorkflowGUI.Transition({
+                                        id: value
+                                    });
+
+                                    this.transitionStore.add(record);
+
+                                    new pimcore.plugin.workflow.transition(this.transitionStore, this.placesStore, record);
+                                } else {
+                                    Ext.Msg.alert(t('workflow_transition_id'), t('workflow_problem_creating_workflow_invalid_characters'));
+                                }
+                            } else if (button == 'cancel') {
+                                return;
+                            }
+                        }.bind(this), null, null, '');
+                    }.bind(this),
+                    iconCls: 'pimcore_icon_add'
+                }]
             }]
         });
 
         return this.transitionsPanel;
     },
 
-    getGlobalActionsPanel: function () {
+    getGlobalActionsPanel: function() {
         this.globalActionsPanel = new Ext.Panel({
             border: false,
             autoScroll: true,
@@ -654,8 +636,7 @@ pimcore.plugin.workflow.item = Class.create({
                 title: t('workflow_global_actions'),
                 margin: '0 0 15 0',
                 store: this.globalActionsStore,
-                columns: [
-                    {
+                columns: [{
                         xtype: 'gridcolumn',
                         dataIndex: 'id',
                         text: t('workflow_global_action_id'),
@@ -669,67 +650,63 @@ pimcore.plugin.workflow.item = Class.create({
                         items: [{
                             iconCls: 'pimcore_icon_edit',
                             tooltip: t('edit'),
-                            handler: function (grid, rowIndex, colIndex) {
+                            handler: function(grid, rowIndex, colIndex) {
                                 new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, grid.store.getAt(rowIndex));
                             }.bind(this)
                         }, {
                             iconCls: 'pimcore_icon_delete',
                             tooltip: t('delete'),
-                            handler: function (grid, rowIndex, colIndex) {
+                            handler: function(grid, rowIndex, colIndex) {
                                 grid.store.removeAt(rowIndex);
                             }.bind(this)
                         }]
                     },
                 ],
-                tbar: [
-                    {
-                        text: t('add'),
-                        handler: function (btn) {
-                            Ext.MessageBox.prompt(t('workflow_global_action_id'), t('workflow_enter_global_action_id'), function (button, value) {
-                                if (button === 'ok') {
-                                    if (this.transitionStore.getById(value)) {
-                                        Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_global_action_with_id_already_exists'));
-                                        return;
-                                    }
-
-                                    if (value.match(/^[a-zA-Z_]+$/)) {
-                                        var record = new WorkflowGUI.Transition({
-                                            id: value
-                                        });
-
-                                        this.globalActionsStore.add(record);
-
-                                        new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, record);
-                                    }
-                                    else {
-                                        Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_problem_creating_workflow_invalid_characters'));
-                                    }
-                                } else if (button == 'cancel') {
+                tbar: [{
+                    text: t('add'),
+                    handler: function(btn) {
+                        Ext.MessageBox.prompt(t('workflow_global_action_id'), t('workflow_enter_global_action_id'), function(button, value) {
+                            if (button === 'ok') {
+                                if (this.transitionStore.getById(value)) {
+                                    Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_global_action_with_id_already_exists'));
                                     return;
                                 }
-                            }.bind(this), null, null, '');
-                        }.bind(this),
-                        iconCls: 'pimcore_icon_add'
-                    }
-                ]
+
+                                if (value.match(/^[a-zA-Z_]+$/)) {
+                                    var record = new WorkflowGUI.Transition({
+                                        id: value
+                                    });
+
+                                    this.globalActionsStore.add(record);
+
+                                    new pimcore.plugin.workflow.global_action(this.globalActionsStore, this.placesStore, record);
+                                } else {
+                                    Ext.Msg.alert(t('workflow_global_action_id'), t('workflow_problem_creating_workflow_invalid_characters'));
+                                }
+                            } else if (button == 'cancel') {
+                                return;
+                            }
+                        }.bind(this), null, null, '');
+                    }.bind(this),
+                    iconCls: 'pimcore_icon_add'
+                }]
             }]
         });
 
         return this.globalActionsPanel
     },
 
-    getVisualizationPanel: function () {
+    getVisualizationPanel: function() {
         this.visualizationPanel = new Ext.Panel({
             title: t('Visualization'),
             icon: '/bundles/pimcoreadmin/img/flat-color-icons/tree_structure.svg',
             border: false,
             layout: 'fit',
-            tbar: [
-                {
+            tbar: [{
                 xtype: 'button',
-                text: t('open_in_new_window')+' / '+t('download'),
+                text: t('open_in_new_window') + ' / ' + t('download'),
                 iconCls: 'pimcore_icon_open',
-                handler: function () {
+                handler: function() {
                     window.open('/admin/workflow/visualize_image?workflow=' + this.id + '');
                 }.bind(this)
             }],
@@ -747,15 +724,15 @@ pimcore.plugin.workflow.item = Class.create({
         return this.visualizationPanel;
     },
 
-    reloadVisualization: function () {
+    reloadVisualization: function() {
         try {
-            this.visualizationPanel.getEl().selectNode(".visualizationFrame").src = '/admin/workflow/visualize?workflow='+this.id;
-        }catch (e) {
+            this.visualizationPanel.getEl().selectNode(".visualizationFrame").src = '/admin/workflow/visualize?workflow=' + this.id;
+        } catch (e) {
             console.log(e);
         }
     },
 
-    save: function () {
+    save: function() {
         if (!this.validate()) {
             Ext.Msg.alert(t('workflow_invalid'), t('workflow_invalid_detail'));
             return;
@@ -781,19 +758,17 @@ pimcore.plugin.workflow.item = Class.create({
                     if (response.success) {
                         this.id = newId;
                         this.saveOnComplete(this);
-                    }
-                    else {
+                    } else {
                         Ext.Msg.alert(t('workflow_invalid'), response.message);
                     }
-                }
-                else {
+                } else {
                     Ext.Msg.alert(t('workflow_invalid'), t('workflow_unknown_error'));
                 }
             }.bind(this)
         });
     },
 
-    clone: function () {
+    clone: function() {
         var me = this,
             id = this.id;
 
@@ -816,12 +791,10 @@ pimcore.plugin.workflow.item = Class.create({
                         if (response) {
                             if (response.success) {
                                 me.parentPanel.openWorkflow(value);
-                            }
-                            else {
+                            } else {
                                 Ext.Msg.alert(t('workflow_invalid'), response.message);
                             }
-                        }
-                        else {
+                        } else {
                             Ext.Msg.alert(t('workflow_invalid'), t('workflow_unknown_error'));
                         }
                     }.bind(this)
@@ -832,7 +805,7 @@ pimcore.plugin.workflow.item = Class.create({
         }, null, null, '');
     },
 
-    validate: function () {
+    validate: function() {
         var valid = true;
 
         valid &= this.settingsPanelForm.isValid();
@@ -841,7 +814,7 @@ pimcore.plugin.workflow.item = Class.create({
         return valid;
     },
 
-    getData: function () {
+    getData: function() {
         var settingsData = this.settingsPanelForm.getForm().getFieldValues();
         var markingStoreData = this.markingStorePanel.getForm().getFieldValues();
         var auditTrailSettings = this.auditTrailPanel.getForm().getFieldValues();
@@ -851,7 +824,7 @@ pimcore.plugin.workflow.item = Class.create({
         if (markingStoreData['service']) {
             delete markingStoreData['type'];
         } else {
-            markingStoreData['arguments'] = this.settingsPanel.down('#markingStoreArgumentsGrid').getStore().getRange().map(function (record) {
+            markingStoreData['arguments'] = this.settingsPanel.down('#markingStoreArgumentsGrid').getStore().getRange().map(function(record) {
                 return record.get('argument');
             });
 
@@ -873,7 +846,7 @@ pimcore.plugin.workflow.item = Class.create({
 
         var places = {};
 
-        this.placesStore.getRange().forEach(function (record) {
+        this.placesStore.getRange().forEach(function(record) {
             var place = Ext.clone(record.data);
             var id = record.getId();
 
@@ -884,7 +857,7 @@ pimcore.plugin.workflow.item = Class.create({
 
         var transitions = {};
 
-        this.transitionStore.getRange().forEach(function (record) {
+        this.transitionStore.getRange().forEach(function(record) {
             var transition = Ext.clone(record.data);
             var id = record.getId();
 
@@ -895,7 +868,7 @@ pimcore.plugin.workflow.item = Class.create({
 
         var globalActions = {};
 
-        this.globalActionsStore.getRange().forEach(function (record) {
+        this.globalActionsStore.getRange().forEach(function(record) {
             var globalAction = Ext.clone(record.data);
             var id = record.getId();
 
@@ -914,14 +887,14 @@ pimcore.plugin.workflow.item = Class.create({
         return data;
     },
 
-    saveOnComplete: function () {
+    saveOnComplete: function() {
         this.parentPanel.grid.getStore().load();
         this.reloadVisualization();
 
         pimcore.helpers.showNotification(t('success'), t('workflow_saved_successfully'), 'success');
     },
 
-    activate: function () {
+    activate: function() {
         this.parentPanel.getEditPanel().setActiveTab(this.panel);
     }
 });
