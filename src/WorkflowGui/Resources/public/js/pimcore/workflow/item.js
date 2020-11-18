@@ -118,7 +118,7 @@ pimcore.plugin.workflow.item = Class.create({
         places = Object.keys(places).map(function (objectKey, index) {
             var place = places[objectKey];
             place['id'] = objectKey;
-            place['label'] = (place.label && place.label.lenght > 0)
+            place['label'] = (place.label && place.label.length > 0)
                 ? t(place.label)
                 : objectKey;
 
