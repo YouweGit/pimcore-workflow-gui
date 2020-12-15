@@ -18,10 +18,12 @@ namespace Youwe\Pimcore\WorkflowGui\Controller;
 
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
+use Pimcore\Cache\Symfony\CacheClearer;
 use Pimcore\Model\User;
 use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -127,7 +129,7 @@ class WorkflowController extends AdminController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function saveAction(Request $request)
+    public function saveAction(Request $request, KernelInterface $kernel, CacheClearer $symfonyCacheClearer)
     {
         $this->isGrantedOr403();
 
@@ -167,6 +169,8 @@ class WorkflowController extends AdminController
         $contents['pimcore']['workflows'][$newId] = $newConfiguration;
 
         file_put_contents($configPath, Yaml::dump($contents, 100));
+
+        $symfonyCacheClearer->clear($kernel->getEnvironment());
 
         $workflow = $this->repository->find($id);
 
