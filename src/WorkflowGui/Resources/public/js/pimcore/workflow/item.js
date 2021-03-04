@@ -427,7 +427,7 @@ pimcore.plugin.workflow.item = Class.create({
             supportType = 'simple';
         } else {
             if (this.data.support_strategy.hasOwnProperty('service') && this.data.support_strategy.service) {
-                supportType = service;
+                supportType = 'service';
             } else if (this.data.support_strategy.hasOwnProperty('type') && this.data.support_strategy.type) {
                 supportType = this.data.support_strategy.type;
             }
