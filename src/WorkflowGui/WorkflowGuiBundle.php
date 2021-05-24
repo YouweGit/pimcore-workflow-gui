@@ -16,6 +16,7 @@ namespace Youwe\Pimcore\WorkflowGui;
 
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use Youwe\Pimcore\WorkflowGui\Installer\WorkflowGuiInstaller;
 
 class WorkflowGuiBundle extends AbstractPimcoreBundle
 {
@@ -50,7 +51,7 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
      */
     public function getInstaller()
     {
-        return $this->container->get(MigrationInstaller::class);
+        return $this->container->get(WorkflowGuiInstaller::class);
     }
 
     /**
@@ -75,7 +76,7 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
         ];
     }
 
-        /**
+    /**
      * {@inheritdoc}
      */
     public function getCssPaths()
