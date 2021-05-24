@@ -5,7 +5,8 @@ services:
         public: true
 
     # tool: installer
-    Youwe\Pimcore\WorkflowGui\MigrationInstaller:
+    Youwe\Pimcore\WorkflowGui\Installer\WorkflowGuiInstaller:
+        public: true
         arguments:
             $bundle: "@=service('kernel').getBundle('WorkflowGuiBundle')"
-            $configFileResolver: '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'
+
