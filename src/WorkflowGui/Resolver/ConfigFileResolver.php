@@ -22,18 +22,12 @@ class ConfigFileResolver implements ConfigFileResolverInterface
 {
     protected $configFile;
 
-    /**
-     * @param $configFile
-     */
-    public function __construct($configFile)
+    public function __construct(string $configFile)
     {
         $this->configFile = $configFile;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigPath()
+    public function getConfigPath(): string
     {
         $fs = new Filesystem();
 

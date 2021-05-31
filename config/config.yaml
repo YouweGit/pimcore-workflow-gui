@@ -1,0 +1,142 @@
+imports:
+    - { resource: services.yaml }
+    - { resource: 'local/' }
+    - { resource: '../var/bundles/workflow-gui/workflow.yml' }
+
+
+pimcore:
+
+# IMPORTANT Notice!
+# Following there are only some examples listed, for a full list of possible options, please run the following command:
+# ./bin/console debug:config pimcore
+# you can also filter them by path, eg.
+# ./bin/console debug:config pimcore assets
+# or even more specific:
+# ./bin/console debug:config pimcore assets.image
+
+
+#### TRANSLATIONS
+#    translations:
+#        case_insensitive: true
+
+#### FEATURE FLAGS
+#    flags:
+#        zend_date: true
+
+#### CLASS OVERRIDES EXAMPLES
+#    models:
+#        class_overrides:
+#            'Pimcore\Model\DataObject\News': 'App\Model\DataObject\News'
+#            'Pimcore\Model\DataObject\News\Listing': 'App\Model\DataObject\News\Listing'
+#            'Pimcore\Model\DataObject\Folder': 'App\Model\DataObject\Folder'
+#            'Pimcore\Model\Asset\Folder': 'App\Model\Asset\Folder'
+#            'Pimcore\Model\Asset\Image': 'App\Model\Asset\Image'
+#            'Pimcore\Model\Document\Page': 'App\Model\Document\Page'
+#            'Pimcore\Model\Document\Link': 'App\Model\Document\Link'
+#            'Pimcore\Model\Document\Listing': 'App\Model\Document\Listing'
+
+
+#### CUSTOM DOCUMENT EDITABLES
+#    documents:
+#        allow_trailing_slash: 'yes'
+#        generate_preview: false
+#        tags:
+#            map:
+#                markdown: \App\Model\Document\Tag\Markdown
+
+
+#### CUSTOM OBJECT DATA TYPES
+#    objects:
+#        class_definitions:
+#            data:
+#                map:
+#                  myDataType: \App\Model\DataObject\Data\MyDataType
+
+
+#### ASSET CUSTOM SETTINGS
+#    assets:
+#        icc_rgb_profile: ''
+#        icc_cmyk_profile: ''
+#        versions:
+#            use_hardlinks: false
+#        image:
+#            low_quality_image_preview:
+#                enabled: false
+#                generator: imagick
+#            thumbnails:
+#                webp_auto_support: false
+
+
+#### SYSTEM SETTINGS
+
+#    general:
+#        timezone: Europe/Berlin
+#        path_variable: ''
+#        instance_identifier: ''
+#    services:
+#        google:
+#            client_id: 73893596983.apps.googleusercontent.com
+#            email: 73893596983@developer.gserviceaccount.com
+#            simple_api_key: AIzaSyCo9Wj49hYJWW2WgOju4iMYNTvdcBxmyQ8
+#            browser_api_key: AIzaSyBJX16kWAmUVEz1c1amzp2iKqAfumbcoQQ
+#    full_page_cache:
+#        enabled: false
+#        lifetime: null
+#        exclude_cookie: ''
+#        exclude_patterns: ''
+#    httpclient:
+#        adapter: Socket # use 'Proxy' for custom proxy configuration
+#        proxy_host: ''
+#        proxy_port: ''
+#        proxy_user: ''
+#        proxy_pass: ''
+#    email:
+#        sender:
+#            name: 'Pimcore Demo'
+#            email: demo@pimcore.com
+#        return:
+#            name: ''
+#            email: ''
+#    newsletter:
+#        use_specific: false # set true to use the following options for newsletter delivery
+#        sender:
+#            name: ''
+#            email: ''
+#        return:
+#            name: ''
+#            email: ''
+
+#    applicationlog:
+#        mail_notification:
+#            send_log_summary: false
+#            filter_priority: null
+#            mail_receiver: ''
+#        archive_treshold: '30'
+#        archive_alternative_database: ''
+
+#### SYMFONY OVERRIDES
+framework:
+
+#### DEFINE LOCATION OF MANIFEST WHEN WORKING WITH SYMFONY ENCORE
+#    assets:
+#        json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+
+#### USE CUSTOM CACHE POOL
+#    cache:
+#        pools:
+#            pimcore.cache.pool:
+#                public: true
+#                tags: true
+#                default_lifetime: 31536000  # 1 year
+#                adapter: pimcore.cache.adapter.redis_tag_aware
+#                provider: 'redis://localhost' # Redis DNS, see: https://symfony.com/doc/current/components/cache/adapters/redis_adapter.html#configure-the-connection
+
+#### USE SESSION HANDLER CONFIGURED IN php.ini
+#    session:
+#        handler_id: null
+
+#### SYMFONY MAILER TRANSPORTS
+#    mailer:
+#        transports:
+#            main: smtp://user:pass@smtp.example.com:port
+#            pimcore_newsletter: smtp://user:pass@smtp.example.com:port

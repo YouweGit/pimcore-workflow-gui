@@ -26,6 +26,11 @@
       "Youwe\\Pimcore\\WorkflowGui\\": "src/WorkflowGui"
     }
   },
+  "autoload-dev": {
+    "classmap": [
+      "src/Kernel.php"
+    ]
+  },
   "extra": {
     "pimcore": {
       "bundles": [

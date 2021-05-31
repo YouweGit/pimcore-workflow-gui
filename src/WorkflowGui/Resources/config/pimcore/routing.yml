@@ -1,35 +1,35 @@
 workflow_gui.admin.list:
     path: /admin/workflow/list
-    defaults: { _controller: WorkflowGuiBundle:Workflow:list }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::listAction }
 
 workflow_gui.admin.get:
     path: /admin/workflow/get
-    defaults: { _controller: WorkflowGuiBundle:Workflow:get }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::getAction }
 
 workflow_gui.admin.clone:
     path: /admin/workflow/clone
-    defaults: { _controller: WorkflowGuiBundle:Workflow:clone }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::cloneAction }
 
 workflow_gui.admin.save:
     path: /admin/workflow/save
     methods: [POST]
-    defaults: { _controller: WorkflowGuiBundle:Workflow:save }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::saveAction }
 
 workflow_gui.admin.delete:
     path: /admin/workflow/delete
     methods: [POST]
-    defaults: { _controller: WorkflowGuiBundle:Workflow:delete }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::deleteAction }
 
 workflow_gui.admin.visualize:
     path: /admin/workflow/visualize
     methods: [GET]
-    defaults: { _controller: WorkflowGuiBundle:Workflow:visualize }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::visualizeAction }
 
 workflow_gui.admin.visualize_image:
     path: /admin/workflow/visualize_image
     methods: [GET]
-    defaults: { _controller: WorkflowGuiBundle:Workflow:visualizeImage }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::visualizeImageAction }
 
 workflow_gui.roles.search:
     path: /admin/workflow/roles/search
-    defaults: { _controller: WorkflowGuiBundle:Workflow:searchRoles }
+    defaults: { _controller: Youwe\Pimcore\WorkflowGui\Controller\WorkflowController::searchRolesAction }

@@ -361,10 +361,10 @@ pimcore.plugin.workflow.item = Class.create({
                 },
                 {
                     xtype: 'combobox',
-                    fieldLabel: t('workflow_initial_place'),
+                    fieldLabel: t('workflow_initial_marking'),
                     store: this.placesStore,
-                    name: 'initial_place',
-                    value: this.data.initial_place,
+                    name: 'initial_markings',
+                    value: this.data.initial_markings,
                     displayField: 'label',
                     valueField: 'id',
                     queryMode: 'local'

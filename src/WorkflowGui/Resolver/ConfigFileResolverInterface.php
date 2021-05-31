@@ -18,8 +18,5 @@ namespace Youwe\Pimcore\WorkflowGui\Resolver;
 
 interface ConfigFileResolverInterface
 {
-    /**
-     * @return string
-     */
-    public function getConfigPath();
+    public function getConfigPath(): string;
 }
