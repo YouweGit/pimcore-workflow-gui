@@ -16,3 +16,5 @@ services:
             - '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'
         tags:
             - { name: controller.service_arguments }
+        calls:
+            - { method: setContainer, arguments: [ '@service_container' ] }

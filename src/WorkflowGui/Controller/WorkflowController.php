@@ -21,41 +21,28 @@ use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
 use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Yaml\Yaml;
 use Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepositoryInterface;
 use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver;
 
 class WorkflowController extends AdminController
 {
-    /**
-     * @var WorkflowRepositoryInterface
-     */
     protected $repository;
-
-    /**
-     * @var ConfigFileResolver
-     */
     protected $configResolver;
 
-    /**
-     * @param WorkflowRepositoryInterface $repository
-     * @param ConfigFileResolver          $configFileResolver
-     */
     public function __construct(WorkflowRepositoryInterface $repository, ConfigFileResolver $configFileResolver)
     {
         $this->repository = $repository;
         $this->configResolver = $configFileResolver;
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function listAction(Request $request)
+    public function listAction(): JsonResponse
     {
         $this->isGrantedOr403();
 
@@ -65,18 +52,14 @@ class WorkflowController extends AdminController
         foreach ($workflows as $id => $workflow) {
             $results[] = [
                 'id' => $id,
-                'label' => $workflow['label']
+                'label' => $workflow['label'],
             ];
         }
 
         return $this->json($results);
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function getAction(Request $request)
+    public function getAction(Request $request): JsonResponse
     {
         $this->isGrantedOr403();
 
@@ -90,11 +73,7 @@ class WorkflowController extends AdminController
         return $this->json(['success' => true, 'data' => $workflow]);
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function cloneAction(Request $request)
+    public function cloneAction(Request $request): JsonResponse
     {
         $this->isGrantedOr403();
 
@@ -108,7 +87,10 @@ class WorkflowController extends AdminController
         }
 
         if ($workflowByName) {
-            return $this->json(['success' => false, 'message' => $this->trans('workflow_gui_workflow_with_name_already_exists')]);
+            return $this->json([
+                'success' => false,
+                'message' => $this->trans('workflow_gui_workflow_with_name_already_exists'),
+            ]);
         }
 
         $configPath = $this->configResolver->getConfigPath();
@@ -123,11 +105,7 @@ class WorkflowController extends AdminController
         return $this->json(['success' => true, 'id' => $name]);
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function saveAction(Request $request)
+    public function saveAction(Request $request): JsonResponse
     {
         $this->isGrantedOr403();
 
@@ -173,11 +151,7 @@ class WorkflowController extends AdminController
         return $this->json(['success' => true, 'data' => $workflow]);
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request): JsonResponse
     {
         $this->isGrantedOr403();
 
@@ -196,11 +170,7 @@ class WorkflowController extends AdminController
         return $this->json(['success' => true]);
     }
 
-    /**
-     * @param Request $request
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
-     */
-    public function searchRolesAction(Request $request)
+    public function searchRolesAction(Request $request): JsonResponse
     {
         $this->isGrantedOr403();
 
@@ -232,12 +202,13 @@ class WorkflowController extends AdminController
         ]);
     }
 
-    /**
-     * @throws AccessDeniedException
-     */
-    protected function isGrantedOr403()
+    protected function isGrantedOr403(): void
     {
         $user = $this->getAdminUser();
+
+        if (null === $user) {
+            throw new AccessDeniedException();
+        }
 
         if ($user->isAllowed('workflow_gui')) {
             return;
@@ -246,7 +217,7 @@ class WorkflowController extends AdminController
         throw new AccessDeniedException();
     }
 
-    protected function sanitizeConfiguration($configuration)
+    protected function sanitizeConfiguration($configuration): array
     {
         if (isset($configuration['places'])) {
             foreach ($configuration['places'] as $placeKey => &$placeConfig) {
@@ -312,23 +283,23 @@ class WorkflowController extends AdminController
         return $configuration;
     }
 
-    public function visualizeAction(Request $request)
+    public function visualizeAction(Request $request): Response
     {
         $this->isGrantedOr403();
 
         try {
-            return $this->render(
-                'WorkflowGuiBundle:Workflow:visualize.html.php',
+            return new Response($this->container->get('twig')->render(
+                '@WorkflowGui/Workflow/visualize.html.twig',
                 [
-                    'image' => $this->getVisualization($request->get('workflow'), 'svg')
+                    'image' => $this->getVisualization($request->get('workflow'), 'svg'),
                 ]
-            );
+            ));
         } catch (\Throwable $e) {
             return new Response($e->getMessage());
         }
     }
 
-    public function visualizeImageAction(Request $request)
+    public function visualizeImageAction(Request $request): Response
     {
         $this->isGrantedOr403();
 
@@ -339,13 +310,13 @@ class WorkflowController extends AdminController
 
             // Set headers
             $response->headers->set('Cache-Control', 'private');
-            $response->headers->set('Content-type', 'image/png' );
-            $response->headers->set('Content-length',  strlen($image));
+            $response->headers->set('Content-type', 'image/png');
+            $response->headers->set('Content-length', strlen($image));
 
             // Send headers before outputting anything
             $response->sendHeaders();
 
-            $response->setContent( $image );
+            $response->setContent($image);
 
             return $response;
         } catch (\Throwable $e) {
@@ -353,21 +324,25 @@ class WorkflowController extends AdminController
         }
     }
 
-    /**
-     * @param string $workflow name of workflow
-     * @param string $format output format, e.g. svg or png
-     *
-     * @return string
-     * @throws \Exception
-     */
-    private function getVisualization($workflow, $format) {
-        try {
-            $dotExecutable = Console::getExecutable('dot', true);
-        } catch(\Exception $e) {
-            throw new \Exception('Please install graphviz to visualize workflows');
+    private function getVisualization($workflow, $format): string
+    {
+        $php = Console::getExecutable('php');
+        $dot = Console::getExecutable('dot');
+
+        if (!$php) {
+            throw new \InvalidArgumentException($this->trans('workflow_cmd_not_found', ['php']));
         }
 
-        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
-        return Console::exec($cliCommand);
+        if (!$dot) {
+            throw new \InvalidArgumentException($this->trans('workflow_cmd_not_found', ['dot']));
+        }
+
+        $cmd = $php.' '.PIMCORE_PROJECT_ROOT.'/bin/console pimcore:workflow:dump '.$workflow.' | '.$dot.' -T' . $format;
+
+        Console::addLowProcessPriority($cmd);
+        $process = Process::fromShellCommandline($cmd);
+        $process->run();
+
+        return $process->getOutput();
     }
 }

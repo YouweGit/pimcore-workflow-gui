@@ -23,31 +23,19 @@ use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolverInterface;
 
 class WorkflowRepository implements WorkflowRepositoryInterface
 {
-    /**
-     * @var ConfigFileResolverInterface
-     */
     protected $configFileResolver;
 
-    /**
-     * @param ConfigFileResolverInterface $configFileResolver
-     */
     public function __construct(ConfigFileResolverInterface $configFileResolver)
     {
         $this->configFileResolver = $configFileResolver;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findAll()
+    public function findAll(): array
     {
         return $this->processConfiguration();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function find($id)
+    public function find($id): array
     {
         $all = $this->findAll();
         $filtered = array_filter(
@@ -61,11 +49,7 @@ class WorkflowRepository implements WorkflowRepositoryInterface
         return reset($filtered);
     }
 
-    /**
-     * @param string $configFile
-     * @return array
-     */
-    protected function processConfiguration()
+    protected function processConfiguration(): array
     {
         $config = Yaml::parse(
             file_get_contents($this->configFileResolver->getConfigPath())

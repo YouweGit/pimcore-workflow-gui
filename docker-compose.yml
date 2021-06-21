@@ -1,0 +1,51 @@
+version: '3.4'
+services:
+  redis:
+    image: redis
+
+  db:
+    image: mariadb:10.6
+    container_name: workflow-gui--mariadb
+    working_dir: /application
+    command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_general_ci]
+    volumes:
+      - workflow-gui--4-database:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=ROOT
+      - MYSQL_DATABASE=pimcore
+      - MYSQL_USER=pimcore
+      - MYSQL_PASSWORD=pimcore
+
+  adminer:
+    image: adminer
+    ports:
+      - 2002:8080
+
+  php:
+    image: pimcore/pimcore:PHP8.0-apache
+    container_name: workflow-gui--php
+    volumes:
+      - .:/var/www/html:cached
+      - .docker/php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+    ports:
+     - "2000:80"
+     - "2001:443"
+    depends_on:
+     - db
+
+  php-debug:
+    image: pimcore/pimcore:PHP8.0-apache-debug
+    container_name: workflow-gui--debug-php
+    volumes:
+      - .:/var/www/html:cached
+      - .docker/php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+    ports:
+     - "2006:80"
+    depends_on:
+      - db
+    environment:
+      - PHP_DEBUG=1
+      - PHP_IDE_CONFIG="serverName=localhost"
+
+volumes:
+  workflow-gui--4-database:
