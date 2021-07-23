@@ -21,10 +21,11 @@ use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Model\User;
 use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Yaml\Yaml;
 use Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepositoryInterface;
 use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver;
@@ -42,13 +43,23 @@ class WorkflowController extends AdminController
     protected $configResolver;
 
     /**
+     * @var KernelInterface
+     */
+    protected $kernel;
+
+    /**
      * @param WorkflowRepositoryInterface $repository
      * @param ConfigFileResolver          $configFileResolver
+     * @param KernelInterface             $kernel
      */
-    public function __construct(WorkflowRepositoryInterface $repository, ConfigFileResolver $configFileResolver)
-    {
+    public function __construct(
+        WorkflowRepositoryInterface $repository,
+        ConfigFileResolver $configFileResolver,
+        KernelInterface $kernel
+    ) {
         $this->repository = $repository;
         $this->configResolver = $configFileResolver;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -367,7 +378,8 @@ class WorkflowController extends AdminController
             throw new \Exception('Please install graphviz to visualize workflows');
         }
 
-        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
+        $environment = $this->kernel->getEnvironment();
+        $cliCommand = '"'.Console::getPhpCli().'" "'.PIMCORE_PROJECT_ROOT . '/bin/console" --env="'.$environment.'" pimcore:workflow:dump '.$workflow.' | "'.$dotExecutable.'" -T'.$format;
         return Console::exec($cliCommand);
     }
 }
