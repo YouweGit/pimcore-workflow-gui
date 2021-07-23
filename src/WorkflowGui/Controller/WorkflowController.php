@@ -25,21 +25,27 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Yaml\Yaml;
 use Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepositoryInterface;
-use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver;
+use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolverInterface;
 
 class WorkflowController extends AdminController
 {
-    protected $repository;
-    protected $configResolver;
+    protected WorkflowRepositoryInterface $repository;
+    protected ConfigFileResolverInterface $configResolver;
+    protected KernelInterface $kernel;
 
-    public function __construct(WorkflowRepositoryInterface $repository, ConfigFileResolver $configFileResolver)
-    {
+    public function __construct(
+        WorkflowRepositoryInterface $repository,
+        ConfigFileResolverInterface $configFileResolver,
+        KernelInterface $kernel
+    ) {
         $this->repository = $repository;
         $this->configResolver = $configFileResolver;
+        $this->kernel = $kernel;
     }
 
     public function listAction(): JsonResponse
@@ -121,7 +127,7 @@ class WorkflowController extends AdminController
         $processor = new Processor();
 
         try {
-            $config = $processor->processConfiguration($configuration, [
+            $processor->processConfiguration($configuration, [
                     'pimcore' =>
                         [
                             'workflows' => [
@@ -130,7 +136,7 @@ class WorkflowController extends AdminController
                         ],
                 ]
             );
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             return $this->json(['success' => false, 'message' => $ex->getMessage()]);
         }
 
@@ -337,11 +343,15 @@ class WorkflowController extends AdminController
             throw new \InvalidArgumentException($this->trans('workflow_cmd_not_found', ['dot']));
         }
 
-        $cmd = $php.' '.PIMCORE_PROJECT_ROOT.'/bin/console pimcore:workflow:dump '.$workflow.' | '.$dot.' -T' . $format;
+        $cmd = $php.' '.PIMCORE_PROJECT_ROOT.'/bin/console --env="${:arg_environment}" pimcore:workflow:dump "${:arg_workflow}" | '.$dot.' -T"${:arg_format}"';
 
-        Console::addLowProcessPriority($cmd);
+        $cmd = Console::addLowProcessPriority($cmd);
         $process = Process::fromShellCommandline($cmd);
-        $process->run();
+        $process->run(null, [
+            'arg_environment' => $this->kernel->getEnvironment(),
+            'arg_workflow' => $workflow,
+            'arg_format' => $format,
+        ]);
 
         return $process->getOutput();
     }

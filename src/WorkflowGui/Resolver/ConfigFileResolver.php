@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ConfigFileResolver implements ConfigFileResolverInterface
 {
-    protected $configFile;
+    protected string $configFile;
 
     public function __construct(string $configFile)
     {
