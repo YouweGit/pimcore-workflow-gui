@@ -23,7 +23,7 @@ use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolverInterface;
 
 class WorkflowRepository implements WorkflowRepositoryInterface
 {
-    protected $configFileResolver;
+    protected ConfigFileResolverInterface $configFileResolver;
 
     public function __construct(ConfigFileResolverInterface $configFileResolver)
     {
