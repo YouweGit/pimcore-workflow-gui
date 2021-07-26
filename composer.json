@@ -39,7 +39,8 @@
       ]
     },
     "branch-alias": {
-      "dev-master": "2.0-dev"
+      "dev-master": "2.0-dev",
+      "dev-1.x": "1.2-dev"
     }
   }
 }
