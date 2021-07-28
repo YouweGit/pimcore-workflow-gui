@@ -18,6 +18,7 @@ namespace Youwe\Pimcore\WorkflowGui\Controller;
 
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
+use Pimcore\Cache\Symfony\CacheClearer;
 use Pimcore\Model\User;
 use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
@@ -26,7 +27,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Yaml\Yaml;
 use Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepositoryInterface;
 use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver;
 
@@ -48,18 +48,26 @@ class WorkflowController extends AdminController
     protected $kernel;
 
     /**
+     * @var CacheClearer
+     */
+    protected $cacheClearer;
+
+    /**
      * @param WorkflowRepositoryInterface $repository
      * @param ConfigFileResolver          $configFileResolver
      * @param KernelInterface             $kernel
+     * @param CacheClearer                $cacheClearer
      */
     public function __construct(
         WorkflowRepositoryInterface $repository,
         ConfigFileResolver $configFileResolver,
-        KernelInterface $kernel
+        KernelInterface $kernel,
+        CacheClearer $cacheClearer
     ) {
         $this->repository = $repository;
         $this->configResolver = $configFileResolver;
         $this->kernel = $kernel;
+        $this->cacheClearer = $cacheClearer;
     }
 
     /**
@@ -122,14 +130,11 @@ class WorkflowController extends AdminController
             return $this->json(['success' => false, 'message' => $this->trans('workflow_gui_workflow_with_name_already_exists')]);
         }
 
-        $configPath = $this->configResolver->getConfigPath();
-
-        $contents = Yaml::parseFile($configPath);
-        $newWorkflow = $contents['pimcore']['workflows'][$id];
-
-        $contents['pimcore']['workflows'][$name] = $newWorkflow;
-
-        file_put_contents($configPath, Yaml::dump($contents, 100));
+        $this->repository->updateConfig(function (array $workflows) use ($id, $name): array {
+            $workflows[$name] = $workflows[$id];
+            return $workflows;
+        });
+        $this->cacheClearer->clear($this->kernel->getEnvironment());
 
         return $this->json(['success' => true, 'id' => $name]);
     }
@@ -167,17 +172,15 @@ class WorkflowController extends AdminController
             return $this->json(['success' => false, 'message' => $ex->getMessage()]);
         }
 
-        $configPath = $this->configResolver->getConfigPath();
+        $this->repository->updateConfig(function (array $workflows) use ($id, $newId, $newConfiguration): array {
+            if (isset($workflows[$id])) {
+                unset($workflows[$id]);
+            }
 
-        $contents = Yaml::parseFile($configPath);
-
-        if (isset($contents['pimcore']['workflows'][$id])) {
-            unset($contents['pimcore']['workflows'][$id]);
-        }
-
-        $contents['pimcore']['workflows'][$newId] = $newConfiguration;
-
-        file_put_contents($configPath, Yaml::dump($contents, 100));
+            $workflows[$newId] = $newConfiguration;
+            return $workflows;
+        });
+        $this->cacheClearer->clear($this->kernel->getEnvironment());
 
         $workflow = $this->repository->find($id);
 
@@ -194,15 +197,13 @@ class WorkflowController extends AdminController
 
         $id = $request->get('id');
 
-        $configPath = $this->configResolver->getConfigPath();
-
-        $contents = Yaml::parseFile($configPath);
-
-        if (isset($contents['pimcore']['workflows'][$id])) {
-            unset($contents['pimcore']['workflows'][$id]);
-        }
-
-        file_put_contents($configPath, Yaml::dump($contents, 100));
+        $this->repository->updateConfig(function (array $workflows) use ($id): array {
+            if (isset($workflows[$id])) {
+                unset($workflows[$id]);
+            }
+            return $workflows;
+        });
+        $this->cacheClearer->clear($this->kernel->getEnvironment());
 
         return $this->json(['success' => true]);
     }
