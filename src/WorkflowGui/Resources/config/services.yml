@@ -15,5 +15,6 @@ services:
             - '@Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepository'
             - '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'
             - '@kernel'
+            - '@Pimcore\Cache\Symfony\CacheClearer'
         tags:
             - { name: controller.service_arguments }

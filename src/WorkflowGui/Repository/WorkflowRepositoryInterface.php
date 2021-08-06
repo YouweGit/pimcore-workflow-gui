@@ -28,4 +28,9 @@ interface WorkflowRepositoryInterface
      * @return array
      */
     public function find($id);
+
+    /**
+     * @param callable $workflowsRewriter
+     */
+    public function updateConfig(callable $workflowsRewriter): void;
 }
