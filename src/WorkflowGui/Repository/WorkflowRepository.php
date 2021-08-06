@@ -49,11 +49,16 @@ class WorkflowRepository implements WorkflowRepositoryInterface
         return reset($filtered);
     }
 
+    public function updateConfig(callable $workflowsRewriter): void
+    {
+        $config = $this->loadConfig();
+        $config['pimcore']['workflows'] = $workflowsRewriter($config['pimcore']['workflows']);
+        $this->storeConfig($config);
+    }
+
     protected function processConfiguration(): array
     {
-        $config = Yaml::parse(
-            file_get_contents($this->configFileResolver->getConfigPath())
-        );
+        $config = $this->loadConfig();
 
         $configuration = new Configuration();
         $processor = new Processor();
@@ -61,5 +66,20 @@ class WorkflowRepository implements WorkflowRepositoryInterface
         $config = $processor->processConfiguration($configuration, $config ?? []);
 
         return $config['workflows'];
+    }
+
+    protected function loadConfig(): array
+    {
+        return Yaml::parse(
+            file_get_contents($this->configFileResolver->getConfigPath())
+        );
+    }
+
+    protected function storeConfig(array $config): void
+    {
+        file_put_contents(
+            $this->configFileResolver->getConfigPath(),
+            Yaml::dump($config, 100)
+        );
     }
 }
