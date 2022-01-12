@@ -1,7 +1,5 @@
 # Pimcore - Workflow GUI
 
-> I, Dominik ([@pfaffenbauer](https://github.com/dpfaffenbauer)), will stop maintaining this form now on and will continue to work on this fork [https://github.com/cors-gmbh/pimcore-workflow-gui](https://github.com/cors-gmbh/pimcore-workflow-gui)
-
 ## Requirements
  - Pimcore 10.0.x
 
@@ -12,6 +10,53 @@ Workflow GUI adds a User Interface for configuring Pimcore Workflows.
  * Enable via command-line (or inside the pimcore extension manager): ```bin/console pimcore:bundle:enable WorkflowGuiBundle```
  * Install via command-line (or inside the pimcore extension manager): ```bin/console pimcore:bundle:install WorkflowGuiBundle```
  * Make sure that the Bundles generated config is loaded (config/config.yaml): ```../var/bundles/workflow-gui/workflow.yml```
+
+## Example workflow
+Put the workflow below in the following location ``var/bundles/workflow-gui/workflow.yml`` and change the class ``Pimcore\Model\DataObject\Test`` to the dataobject you want to apply it to.
+```yaml
+pimcore:
+    workflows:
+        exampleWorkflow:
+            enabled: true
+            priority: 1
+            label: 'Example workflow'
+            initial_markings: placeA
+            type: workflow
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: state_table
+            support_strategy:
+                type: expression
+                arguments:
+                    - Pimcore\Model\DataObject\Test
+                    - is_fully_authenticated()
+            places:
+                placeA:
+                    visibleInHeader: true
+                    title: 'Place A'
+                    label: 'Place A'
+                    color: '#eb0058'
+                placeB:
+                    title: 'Place B'
+                    visibleInHeader: true
+                    label: 'Place B'
+                    color: '#00800f'
+            transitions:
+                placeAtoB:
+                    from:
+                        - placeA
+                    to:
+                        - placeB
+                    options:
+                        label: 'Place A to B'
+                        changePublishedState: no_change
+                        notes:
+                            commentEnabled: false
+                            additionalFields: {  }
+            globalActions: {  }
+
+```
 
 ## Configuration
 
