@@ -339,9 +339,18 @@ class WorkflowController extends AdminController
             throw new \InvalidArgumentException($this->trans('workflow_cmd_not_found', ['dot']));
         }
 
+        $workflowRepository = $this->repository->find($workflow);
+
+        if ($workflowRepository === null) {
+            throw new \InvalidArgumentException($this->trans('workflow_gui_not_found'));
+        }
+
+        if (!$workflowRepository['enabled'] ?? false) {
+            throw new \InvalidArgumentException($this->trans('workflow_gui_enable_message'));
+        }
+
         $cmd = $php.' '.PIMCORE_PROJECT_ROOT.'/bin/console --env="${:arg_environment}" pimcore:workflow:dump "${:arg_workflow}" | '.$dot.' -T"${:arg_format}"';
 
-        $cmd = Console::addLowProcessPriority($cmd);
         $process = Process::fromShellCommandline($cmd);
         $process->run(null, [
             'arg_environment' => $this->kernel->getEnvironment(),

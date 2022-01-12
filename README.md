@@ -1,7 +1,5 @@
 # Pimcore - Workflow GUI
 
-> I, Dominik ([@pfaffenbauer](https://github.com/dpfaffenbauer)), will stop maintaining this form now on and will continue to work on this fork [https://github.com/cors-gmbh/pimcore-workflow-gui](https://github.com/cors-gmbh/pimcore-workflow-gui)
-
 ## Requirements
  - Pimcore 10.0.x
 
