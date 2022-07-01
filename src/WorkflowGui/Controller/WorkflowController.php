@@ -268,7 +268,7 @@ class WorkflowController extends AdminController
                     }
                 }
                 foreach ($placeConfig as $placeConfigKey => $value) {
-                    if (!$value) {
+                    if (!$value && !in_array($placeConfigKey, ['visibleInHeader'])) {
                         unset($placeConfig[$placeConfigKey]);
                     }
                 }
