@@ -72,7 +72,7 @@ class WorkflowRepository implements WorkflowRepositoryInterface
     {
         return Yaml::parse(
             file_get_contents($this->configFileResolver->getConfigPath())
-        );
+        ) ?? [];
     }
 
     protected function storeConfig(array $config): void
