@@ -20,12 +20,9 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ConfigFileResolver implements ConfigFileResolverInterface
 {
-    protected string $configFile;
-
-    public function __construct(string $configFile)
-    {
-        $this->configFile = $configFile;
-    }
+    public function __construct(
+        protected string $configFile,
+    ) {}
 
     public function getConfigPath(): string
     {

@@ -11,22 +11,14 @@
  * @license    https://github.com/YouweGit/pimcore-workflow-gui/blob/master/LICENSE.md     GNU General Public License version 3 (GPLv3)
  */
 
-pimcore.registerNS('pimcore.plugin.WorkflowGuiBundle');
+pimcore.registerNS('pimcore.plugin.WorkflowGuiBundle.startup');
 
-pimcore.plugin.WorkflowGuiBundle = Class.create(pimcore.plugin.admin, {
-    getClassName: function () {
-        return 'pimcore.plugin.WorkflowGuiBundle';
-    },
-
-    initialize: function () {
-        pimcore.plugin.broker.registerPlugin(this);
-    },
-
-    pimcoreReady: function (params,broker) {
+pimcore.plugin.WorkflowGuiBundle.startup = {
+    addMenuItem: function () {
         var user = pimcore.globalmanager.get('user');
         var perspectiveCfg = pimcore.globalmanager.get('perspective');
 
-        if(user.isAllowed('workflow_gui') && perspectiveCfg.inToolbar('settings.workflow_gui')) {
+        if (user.isAllowed('workflow_gui') && perspectiveCfg.inToolbar('settings.workflow_gui')) {
             var settingsMenu = new Ext.Action({
                 text: t('workflows'),
                 icon: '/bundles/pimcoreadmin/img/flat-white-icons/workflow.svg',
@@ -45,6 +37,9 @@ pimcore.plugin.WorkflowGuiBundle = Class.create(pimcore.plugin.admin, {
             pimcore.globalmanager.add('workflows', new pimcore.plugin.workflow.panel());
         }
     },
+};
+
+document.addEventListener(pimcore.events.pimcoreReady, function () {
+    pimcore.plugin.WorkflowGuiBundle.startup.addMenuItem();
 });
 
-var WorkflowGuiBundlePlugin = new pimcore.plugin.WorkflowGuiBundle();
