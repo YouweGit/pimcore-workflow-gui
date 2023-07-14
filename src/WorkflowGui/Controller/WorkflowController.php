@@ -16,9 +16,10 @@ declare(strict_types=1);
 
 namespace Youwe\Pimcore\WorkflowGui\Controller;
 
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Cache\Symfony\CacheClearer;
+use Pimcore\Controller\Traits\JsonHelperTrait;
+use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\User;
 use Pimcore\Tool\Console;
 use Symfony\Component\Config\Definition\Processor;
@@ -32,24 +33,16 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepositoryInterface;
 use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolverInterface;
 
-class WorkflowController extends AdminController
+class WorkflowController extends UserAwareController
 {
-    protected WorkflowRepositoryInterface $repository;
-    protected ConfigFileResolverInterface $configResolver;
-    protected KernelInterface $kernel;
-    protected CacheClearer $cacheClearer;
+    use JsonHelperTrait;
 
     public function __construct(
-        WorkflowRepositoryInterface $repository,
-        ConfigFileResolverInterface $configFileResolver,
-        KernelInterface $kernel,
-        CacheClearer $cacheClearer
-    ) {
-        $this->repository = $repository;
-        $this->configResolver = $configFileResolver;
-        $this->kernel = $kernel;
-        $this->cacheClearer = $cacheClearer;
-    }
+        protected WorkflowRepositoryInterface $repository,
+        protected ConfigFileResolverInterface $configFileResolver,
+        protected KernelInterface $kernel,
+        protected CacheClearer $cacheClearer,
+    ) {}
 
     public function listAction(): JsonResponse
     {
@@ -198,7 +191,7 @@ class WorkflowController extends AdminController
             }
         }
 
-        return $this->adminJson([
+        return $this->jsonResponse([
             'success' => true,
             'roles' => $roles,
         ]);
@@ -206,7 +199,7 @@ class WorkflowController extends AdminController
 
     protected function isGrantedOr403(): void
     {
-        $user = $this->getAdminUser();
+        $user = $this->getPimcoreUser();
 
         if (null === $user) {
             throw new AccessDeniedException();

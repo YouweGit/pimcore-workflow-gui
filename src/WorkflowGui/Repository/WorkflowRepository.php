@@ -23,12 +23,9 @@ use Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolverInterface;
 
 class WorkflowRepository implements WorkflowRepositoryInterface
 {
-    protected ConfigFileResolverInterface $configFileResolver;
-
-    public function __construct(ConfigFileResolverInterface $configFileResolver)
-    {
-        $this->configFileResolver = $configFileResolver;
-    }
+    public function __construct(
+        protected ConfigFileResolverInterface $configFileResolver,
+    ) {}
 
     public function findAll(): array
     {

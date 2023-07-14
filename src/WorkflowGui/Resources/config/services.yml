@@ -20,3 +20,5 @@ services:
             - { name: controller.service_arguments }
         calls:
             - { method: setContainer, arguments: [ '@service_container' ] }
+            - { method: setTokenResolver, arguments: [ '@Pimcore\Security\User\TokenStorageUserResolver' ] }
+            - { method: setPimcoreSerializer, arguments: [ '@pimcore.serializer' ] }
