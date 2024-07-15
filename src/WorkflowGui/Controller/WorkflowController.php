@@ -93,7 +93,7 @@ class WorkflowController extends UserAwareController
         if ($workflowByName) {
             return $this->json([
                 'success' => false,
-                'message' => $this->trans('workflow_gui_workflow_with_name_already_exists'),
+                'message' => $this->translator->trans('workflow_gui_workflow_with_name_already_exists'),
             ]);
         }
 
@@ -285,12 +285,12 @@ class WorkflowController extends UserAwareController
         $this->isGrantedOr403();
 
         try {
-            return new Response($this->renderView(
+            return $this->render(
                 '@WorkflowGui/Workflow/visualize.html.twig',
                 [
                     'image' => $this->getVisualization($request->get('workflow'), 'svg'),
                 ]
-            ));
+            );
         } catch (\Throwable $e) {
             return new Response($e->getMessage());
         }
