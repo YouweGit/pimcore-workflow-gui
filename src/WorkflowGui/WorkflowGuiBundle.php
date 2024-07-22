@@ -16,10 +16,14 @@ namespace Youwe\Pimcore\WorkflowGui;
 
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use Pimcore\Extension\Bundle\PimcoreBundleAdminClassicInterface;
+use Pimcore\Extension\Bundle\Traits\BundleAdminClassicTrait;
+use Pimcore\Extension\Bundle\Installer\InstallerInterface;
 use Youwe\Pimcore\WorkflowGui\Installer\WorkflowGuiInstaller;
 
-class WorkflowGuiBundle extends AbstractPimcoreBundle
+class WorkflowGuiBundle extends AbstractPimcoreBundle implements PimcoreBundleAdminClassicInterface
 {
+    use BundleAdminClassicTrait;
     use PackageVersionTrait;
 
     protected function getComposerPackageName(): string
@@ -27,22 +31,22 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
         return 'youwe/workflow-gui';
     }
 
-    public function getNiceName()
+    public function getNiceName(): string
     {
         return 'Workflow GUI';
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'Provides a Graphical User Interface to define Pimcore Workflows';
     }
 
-    public function getInstaller()
+    public function getInstaller(): ?InstallerInterface
     {
         return $this->container->get(WorkflowGuiInstaller::class);
     }
 
-    public function getJsPaths()
+    public function getJsPaths(): array
     {
         return [
             '/bundles/workflowgui/js/pimcore/startup.js',
@@ -61,7 +65,7 @@ class WorkflowGuiBundle extends AbstractPimcoreBundle
         ];
     }
 
-    public function getCssPaths()
+    public function getCssPaths(): array
     {
         return [
             '/bundles/workflowgui/css/workflow_gui.css'

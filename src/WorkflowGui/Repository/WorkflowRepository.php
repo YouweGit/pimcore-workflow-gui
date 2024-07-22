@@ -49,7 +49,7 @@ class WorkflowRepository implements WorkflowRepositoryInterface
     public function updateConfig(callable $workflowsRewriter): void
     {
         $config = $this->loadConfig();
-        $config['pimcore']['workflows'] = $workflowsRewriter($config['pimcore']['workflows']);
+        $config['pimcore']['workflows'] = $workflowsRewriter($config['pimcore']['workflows'] ?? []);
         $this->storeConfig($config);
     }
 
