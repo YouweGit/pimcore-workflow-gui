@@ -18,6 +18,7 @@ namespace Youwe\Pimcore\WorkflowGui\Controller;
 
 use Pimcore\Bundle\CoreBundle\DependencyInjection\Configuration;
 use Pimcore\Cache\Symfony\CacheClearer;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Pimcore\Controller\Traits\JsonHelperTrait;
 use Pimcore\Controller\UserAwareController;
 use Pimcore\Model\User;
@@ -42,6 +43,7 @@ class WorkflowController extends UserAwareController
         protected ConfigFileResolverInterface $configFileResolver,
         protected KernelInterface $kernel,
         protected CacheClearer $cacheClearer,
+        protected TranslatorInterface $translator
     ) {}
 
     public function listAction(): JsonResponse
@@ -91,7 +93,7 @@ class WorkflowController extends UserAwareController
         if ($workflowByName) {
             return $this->json([
                 'success' => false,
-                'message' => $this->trans('workflow_gui_workflow_with_name_already_exists'),
+                'message' => $this->translator->trans('workflow_gui_workflow_with_name_already_exists'),
             ]);
         }
 
@@ -283,12 +285,12 @@ class WorkflowController extends UserAwareController
         $this->isGrantedOr403();
 
         try {
-            return new Response($this->container->get('twig')->render(
+            return $this->render(
                 '@WorkflowGui/Workflow/visualize.html.twig',
                 [
                     'image' => $this->getVisualization($request->get('workflow'), 'svg'),
                 ]
-            ));
+            );
         } catch (\Throwable $e) {
             return new Response($e->getMessage());
         }
@@ -325,21 +327,21 @@ class WorkflowController extends UserAwareController
         $dot = Console::getExecutable('dot');
 
         if (!$php) {
-            throw new \InvalidArgumentException($this->trans('workflow_cmd_not_found', ['php']));
+            throw new \InvalidArgumentException($this->translator->trans('workflow_cmd_not_found', ['php'], 'admin'));
         }
 
         if (!$dot) {
-            throw new \InvalidArgumentException($this->trans('workflow_cmd_not_found', ['dot']));
+            throw new \InvalidArgumentException($this->translator->trans('workflow_cmd_not_found', ['dot'], 'admin'));
         }
 
         $workflowRepository = $this->repository->find($workflow);
 
         if ($workflowRepository === null) {
-            throw new \InvalidArgumentException($this->trans('workflow_gui_not_found'));
+            throw new \InvalidArgumentException($this->translator->trans('workflow_gui_not_found', [], 'admin'));
         }
 
         if (!$workflowRepository['enabled'] ?? false) {
-            throw new \InvalidArgumentException($this->trans('workflow_gui_enable_message'));
+            throw new \InvalidArgumentException($this->translator->trans('workflow_gui_enable_message', [], 'admin'));
         }
 
         $cmd = $php.' '.PIMCORE_PROJECT_ROOT.'/bin/console --env="${:arg_environment}" pimcore:workflow:dump "${:arg_workflow}" | '.$dot.' -T"${:arg_format}"';

@@ -11,14 +11,14 @@ services:
             - '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'
 
     Youwe\Pimcore\WorkflowGui\Controller\WorkflowController:
-        arguments:
+       arguments:
             - '@Youwe\Pimcore\WorkflowGui\Repository\WorkflowRepository'
             - '@Youwe\Pimcore\WorkflowGui\Resolver\ConfigFileResolver'
             - '@kernel'
             - '@Pimcore\Cache\Symfony\CacheClearer'
-        tags:
-            - { name: controller.service_arguments }
-        calls:
-            - { method: setContainer, arguments: [ '@service_container' ] }
+            - '@translator'
+       tags: ['controller.service_arguments', 'container.service_subscriber']
+       calls:
+            - { method: setContainer, arguments: [ '@Psr\Container\ContainerInterface' ] }
             - { method: setTokenResolver, arguments: [ '@Pimcore\Security\User\TokenStorageUserResolver' ] }
             - { method: setPimcoreSerializer, arguments: [ '@pimcore.serializer' ] }
