@@ -103,7 +103,7 @@ pimcore.plugin.workflow.place = Class.create({
                     value: place.getId(),
                     fieldLabel: t('workflow_place_id'),
                     allowBlank: false,
-                    regex: /^[a-zA-Z_]+$/
+                    regex: /^[a-zA-Z_0-9]+$/
                 },
                 {
                     xtype: 'textfield',

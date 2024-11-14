@@ -226,7 +226,7 @@ pimcore.plugin.workflow.transition = Class.create({
                     value: transition.getId(),
                     fieldLabel: t('workflow_transition_id'),
                     allowBlank: false,
-                    regex: /^[a-zA-Z_]+$/
+                    regex: /^[a-zA-Z_0-9]+$/
                 },
 
                 {

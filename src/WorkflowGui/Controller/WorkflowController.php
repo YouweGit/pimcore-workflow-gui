@@ -260,15 +260,15 @@ class WorkflowController extends UserAwareController
 
                     if (isset($transitionConfig['options']['notes']['additionalFields'])) {
                         foreach ($transitionConfig['options']['notes']['additionalFields'] as &$additionalField) {
-                            if (!$additionalField['setterFn']) {
+                            if (isset($additionalField['setterFn']) && !$additionalField['setterFn']) {
                                 unset ($additionalField['setterFn']);
                             }
 
-                            if (!$additionalField['title']) {
+                            if (isset($additionalField['title']) && !$additionalField['title']) {
                                 unset ($additionalField['title']);
                             }
 
-                            if (!$additionalField['required']) {
+                            if (isset($additionalField['required']) && !$additionalField['required']) {
                                 unset ($additionalField['required']);
                             }
                         }

@@ -337,7 +337,7 @@ pimcore.plugin.workflow.item = Class.create({
                     value: this.id,
                     fieldLabel: t('workflow_name'),
                     allowBlank: false,
-                    regex: /^[a-zA-Z_]+$/
+                    regex: /^[a-zA-Z_0-9]+$/
                 },
                 {
                     xtype: 'checkbox',
